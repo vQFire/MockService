@@ -1,0 +1,15 @@
+version: '3.9'
+
+services: 
+  database:
+    image: postgres
+    ports:
+      - "1433:5432"
+    volumes:
+      - "postgres:/var/lib/postgresql/data"
+    environment:
+      - POSTGRES_PASSWORD=SuperVeiligNietTeHackenDit1!
+      - POSTGRES_DB=MockService
+
+volumes: 
+  postgres:
