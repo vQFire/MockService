@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MockService.Data;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MockService.Migrations
 {
     [DbContext(typeof(MockServiceContext))]
-    partial class MockServiceContextModelSnapshot : ModelSnapshot
+    [Migration("20220510085912_ScheduleCompetence")]
+    partial class ScheduleCompetence
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +23,21 @@ namespace MockService.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("CompetenceScheduleGroup", b =>
+                {
+                    b.Property<Guid>("ScheduleCompetencesId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ScheduleGroupsId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("ScheduleCompetencesId", "ScheduleGroupsId");
+
+                    b.HasIndex("ScheduleGroupsId");
+
+                    b.ToTable("CompetenceScheduleGroup");
+                });
 
             modelBuilder.Entity("MockService.Models.Competence", b =>
                 {
@@ -39,27 +56,6 @@ namespace MockService.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Competences");
-                });
-
-            modelBuilder.Entity("MockService.Models.CompetenceScheduleGroup", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("CompetenceId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("ScheduleGroupId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompetenceId");
-
-                    b.HasIndex("ScheduleGroupId");
-
-                    b.ToTable("CompetenceScheduleGroup");
                 });
 
             modelBuilder.Entity("MockService.Models.Employee", b =>
@@ -202,27 +198,6 @@ namespace MockService.Migrations
                     b.ToTable("OrganizationalUnits");
                 });
 
-            modelBuilder.Entity("MockService.Models.OrganizationalUnitScheduleGroup", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("OrganizationalUnitId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("ScheduleGroupId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrganizationalUnitId");
-
-                    b.HasIndex("ScheduleGroupId");
-
-                    b.ToTable("OrganizationalUnitScheduleGroup");
-                });
-
             modelBuilder.Entity("MockService.Models.Schedule", b =>
                 {
                     b.Property<Guid>("Id")
@@ -304,19 +279,34 @@ namespace MockService.Migrations
                     b.ToTable("ScheduleGroupSchedule");
                 });
 
-            modelBuilder.Entity("MockService.Models.CompetenceScheduleGroup", b =>
+            modelBuilder.Entity("OrganizationalUnitScheduleGroup", b =>
                 {
-                    b.HasOne("MockService.Models.Competence", "Competence")
+                    b.Property<Guid>("OrganizationalUnitsId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ScheduleGroupsId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("OrganizationalUnitsId", "ScheduleGroupsId");
+
+                    b.HasIndex("ScheduleGroupsId");
+
+                    b.ToTable("OrganizationalUnitScheduleGroup");
+                });
+
+            modelBuilder.Entity("CompetenceScheduleGroup", b =>
+                {
+                    b.HasOne("MockService.Models.Competence", null)
                         .WithMany()
-                        .HasForeignKey("CompetenceId")
+                        .HasForeignKey("ScheduleCompetencesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("MockService.Models.ScheduleGroup", null)
-                        .WithMany("CompetenceScheduleGroups")
-                        .HasForeignKey("ScheduleGroupId");
-
-                    b.Navigation("Competence");
+                        .WithMany()
+                        .HasForeignKey("ScheduleGroupsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("MockService.Models.EmployeeContract", b =>
@@ -368,21 +358,6 @@ namespace MockService.Migrations
                     b.Navigation("OrganizationalUnit");
                 });
 
-            modelBuilder.Entity("MockService.Models.OrganizationalUnitScheduleGroup", b =>
-                {
-                    b.HasOne("MockService.Models.OrganizationalUnit", "OrganizationalUnit")
-                        .WithMany()
-                        .HasForeignKey("OrganizationalUnitId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MockService.Models.ScheduleGroup", null)
-                        .WithMany("OrganizationalUnits")
-                        .HasForeignKey("ScheduleGroupId");
-
-                    b.Navigation("OrganizationalUnit");
-                });
-
             modelBuilder.Entity("MockService.Models.Schedule", b =>
                 {
                     b.HasOne("MockService.Models.EmployeeContract", "EmployeeContract")
@@ -413,11 +388,19 @@ namespace MockService.Migrations
                     b.Navigation("ScheduleGroup");
                 });
 
-            modelBuilder.Entity("MockService.Models.ScheduleGroup", b =>
+            modelBuilder.Entity("OrganizationalUnitScheduleGroup", b =>
                 {
-                    b.Navigation("CompetenceScheduleGroups");
+                    b.HasOne("MockService.Models.OrganizationalUnit", null)
+                        .WithMany()
+                        .HasForeignKey("OrganizationalUnitsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("OrganizationalUnits");
+                    b.HasOne("MockService.Models.ScheduleGroup", null)
+                        .WithMany()
+                        .HasForeignKey("ScheduleGroupsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
