@@ -43,6 +43,8 @@ namespace MockService.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutEmployeeContract(Guid id, EmployeeContract employeeContract)
         {
+            employeeContract.Id = id;
+            
             if (id != employeeContract.Id)
             {
                 return BadRequest();
