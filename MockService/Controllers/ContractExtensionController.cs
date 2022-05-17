@@ -27,7 +27,6 @@ namespace MockService.Controllers
         public async Task<ActionResult<IEnumerable<EmployeeContractExtension>>> GetEmployeeContractExtensions()
         {
             return await _context.EmployeeContractExtensions
-                .Include(c => c.EmployeeContract)
                 .Include(c => c.OrganizationalUnit)
                 .Include(c => c.EmployeeContract.Employee)
                 .ToListAsync();
@@ -38,7 +37,6 @@ namespace MockService.Controllers
         public async Task<ActionResult<EmployeeContractExtension>> GetEmployeeContractExtension(Guid id)
         {
             var employeeContractExtension = _context.EmployeeContractExtensions
-                .Include(c => c.EmployeeContract)
                 .Include(c => c.OrganizationalUnit)
                 .Include(c => c.EmployeeContract.Employee)
                 .FirstOrDefault(c => c.Id == id);
