@@ -1,9 +1,4 @@
 #nullable disable
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MockService.Data;
@@ -26,14 +21,14 @@ namespace MockService.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<EmployeeContract>>> GetEmployeeContracts()
         {
-            return await _context.EmployeeContracts.ToListAsync();
+            return await _context.EmployeeContracts.Include(c => c.Employee).ToListAsync();
         }
 
         // GET: api/Contract/5
         [HttpGet("{id}")]
         public async Task<ActionResult<EmployeeContract>> GetEmployeeContract(Guid id)
         {
-            var employeeContract = await _context.EmployeeContracts.FindAsync(id);
+            var employeeContract = await _context.EmployeeContracts.Include(c => c.Employee).FirstOrDefaultAsync(c => c.Id == id);
 
             if (employeeContract == null)
             {
