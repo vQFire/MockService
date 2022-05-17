@@ -8,6 +8,6 @@ public class EmployeeContractExtension
     public string Function { get; set; }
     public int LaborMinutesPerWeekMin { get; set; }
     public int LaborMinutesPerWeekMax { get; set; }
-    public DateOnly validFrom { get; set; }
-    public DateOnly validTo { get; set; }
+    public DateTime validFrom { get; set; }
+    public DateTime validTo { get; set; }
 }
