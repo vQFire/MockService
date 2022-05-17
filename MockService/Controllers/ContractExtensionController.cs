@@ -79,7 +79,26 @@ namespace MockService.Controllers
         [HttpPost]
         public async Task<ActionResult<EmployeeContractExtension>> PostEmployeeContractExtension(EmployeeContractExtension employeeContractExtension)
         {
-            _context.EmployeeContractExtensions.Add(employeeContractExtension);
+            EmployeeContract contract =
+                await _context.EmployeeContracts.FindAsync(employeeContractExtension.EmployeeContract.Id);
+            OrganizationalUnit unit =
+                await _context.OrganizationalUnits.FindAsync(employeeContractExtension.OrganizationalUnit.Id);
+
+            if (contract == null)
+            {
+                return NotFound("Contract not Found");
+            }
+
+            if (unit == null)
+            {
+                return NotFound("Unit not Found");
+            }
+            
+            employeeContractExtension.EmployeeContract = contract;
+            employeeContractExtension.OrganizationalUnit = unit;
+            
+            
+            _context.EmployeeContractExtensions.Attach(employeeContractExtension);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetEmployeeContractExtension", new { id = employeeContractExtension.Id }, employeeContractExtension);
