@@ -84,6 +84,24 @@ namespace MockService.Controllers
         [HttpPost]
         public async Task<ActionResult<EmployeeContractCompetence>> PostEmployeeContractCompetence(EmployeeContractCompetence employeeContractCompetence)
         {
+            EmployeeContract employeeContract = await _context.EmployeeContracts
+                .Include(c => c.Employee)
+                .FirstOrDefaultAsync(c => c.Employee.Id == employeeContractCompetence.EmployeeContract.Id);
+            Competence competence = await _context.Competences.FindAsync(employeeContractCompetence.Competence.Id);
+            
+            if (employeeContract == null)
+            {
+                return NotFound("Contract not Found");
+            }
+            
+            if (competence == null)
+            {
+                return NotFound("Competence not Found");
+            }
+            
+            employeeContractCompetence.EmployeeContract = employeeContract;
+            employeeContractCompetence.Competence = competence;
+
             _context.EmployeeContractCompetences.Add(employeeContractCompetence);
             await _context.SaveChangesAsync();
 
