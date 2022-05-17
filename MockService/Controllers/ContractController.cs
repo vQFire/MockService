@@ -84,7 +84,7 @@ namespace MockService.Controllers
 
             employeeContract.Employee = employee;
             
-            _context.EmployeeContracts.Attach(employeeContract);
+            _context.EmployeeContracts.Add(employeeContract);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetEmployeeContract", new { id = employeeContract.Id }, employeeContract);

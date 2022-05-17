@@ -106,7 +106,7 @@ namespace MockService.Controllers
             employeeContractExtension.OrganizationalUnit = unit;
             
             
-            _context.EmployeeContractExtensions.Attach(employeeContractExtension);
+            _context.EmployeeContractExtensions.Add(employeeContractExtension);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetEmployeeContractExtension", new { id = employeeContractExtension.Id }, employeeContractExtension);
