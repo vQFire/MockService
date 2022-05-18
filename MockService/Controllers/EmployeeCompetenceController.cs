@@ -26,14 +26,19 @@ namespace MockService.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<EmployeeContractCompetence>>> GetEmployeeContractCompetences()
         {
-            return await _context.EmployeeContractCompetences.ToListAsync();
+            return await _context.EmployeeContractCompetences
+                .Include(c => c.Competence)
+                .Include(c => c.EmployeeContract.Employee)
+                .ToListAsync();
         }
 
         // GET: api/EmployeeCompetence/5
         [HttpGet("{id}")]
         public async Task<ActionResult<EmployeeContractCompetence>> GetEmployeeContractCompetence(Guid id)
         {
-            var employeeContractCompetence = await _context.EmployeeContractCompetences.FindAsync(id);
+            var employeeContractCompetence = await _context.EmployeeContractCompetences
+                .Include(c => c.Competence)
+                .Include(c => c.EmployeeContract.Employee).FirstOrDefaultAsync(c => c.Id == id);
 
             if (employeeContractCompetence == null)
             {
@@ -79,6 +84,24 @@ namespace MockService.Controllers
         [HttpPost]
         public async Task<ActionResult<EmployeeContractCompetence>> PostEmployeeContractCompetence(EmployeeContractCompetence employeeContractCompetence)
         {
+            EmployeeContract employeeContract = await _context.EmployeeContracts
+                .Include(c => c.Employee)
+                .FirstOrDefaultAsync(c => c.Employee.Id == employeeContractCompetence.EmployeeContract.Id);
+            Competence competence = await _context.Competences.FindAsync(employeeContractCompetence.Competence.Id);
+            
+            if (employeeContract == null)
+            {
+                return NotFound("Contract not Found");
+            }
+            
+            if (competence == null)
+            {
+                return NotFound("Competence not Found");
+            }
+            
+            employeeContractCompetence.EmployeeContract = employeeContract;
+            employeeContractCompetence.Competence = competence;
+
             _context.EmployeeContractCompetences.Add(employeeContractCompetence);
             await _context.SaveChangesAsync();
 
