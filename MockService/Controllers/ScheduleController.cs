@@ -48,10 +48,7 @@ namespace MockService.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutSchedule(Guid id, Schedule schedule)
         {
-            if (id != schedule.Id)
-            {
-                return BadRequest();
-            }
+            schedule.Id = id;
 
             _context.Entry(schedule).State = EntityState.Modified;
 

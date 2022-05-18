@@ -44,11 +44,6 @@ namespace MockService.Controllers
         public async Task<IActionResult> PutEmployeeContract(Guid id, EmployeeContract employeeContract)
         {
             employeeContract.Id = id;
-            
-            if (id != employeeContract.Id)
-            {
-                return BadRequest();
-            }
 
             _context.Entry(employeeContract).State = EntityState.Modified;
 

@@ -53,10 +53,7 @@ namespace MockService.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutEmployeeContractCompetence(Guid id, EmployeeContractCompetence employeeContractCompetence)
         {
-            if (id != employeeContractCompetence.Id)
-            {
-                return BadRequest();
-            }
+            employeeContractCompetence.Id = id;
 
             _context.Entry(employeeContractCompetence).State = EntityState.Modified;
 

@@ -54,10 +54,7 @@ namespace MockService.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutEmployeeContractExtension(Guid id, EmployeeContractExtension employeeContractExtension)
         {
-            if (id != employeeContractExtension.Id)
-            {
-                return BadRequest();
-            }
+            employeeContractExtension.Id = id;
 
             _context.Entry(employeeContractExtension).State = EntityState.Modified;
 
