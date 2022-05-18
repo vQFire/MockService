@@ -85,7 +85,7 @@ namespace MockService.Controllers
 
             EmployeeContract employeeContract = await _context.EmployeeContracts
                 .Include(c => c.Employee)
-                .FirstOrDefaultAsync(c => c.Employee.Id == employeeContractCompetence.EmployeeContract.Id);
+                .FirstOrDefaultAsync(c => c.Id == employeeContractCompetence.EmployeeContract.Id);
             Competence competence = await _context.Competences.FindAsync(employeeContractCompetence.Competence.Id);
             
             if (employeeContract == null)
