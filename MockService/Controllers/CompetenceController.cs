@@ -76,6 +76,8 @@ namespace MockService.Controllers
         [HttpPost]
         public async Task<ActionResult<Competence>> PostCompetence(Competence competence)
         {
+            competence.Id = Guid.NewGuid();
+            
             _context.Competences.Add(competence);
             await _context.SaveChangesAsync();
 

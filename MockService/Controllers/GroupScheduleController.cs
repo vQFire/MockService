@@ -76,6 +76,8 @@ namespace MockService.Controllers
         [HttpPost]
         public async Task<ActionResult<ScheduleGroupSchedule>> PostScheduleGroupSchedule(ScheduleGroupSchedule scheduleGroupSchedule)
         {
+            scheduleGroupSchedule.Id = Guid.NewGuid();
+            
             _context.ScheduleGroupSchedule.Add(scheduleGroupSchedule);
             await _context.SaveChangesAsync();
 

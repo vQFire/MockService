@@ -83,6 +83,8 @@ namespace MockService.Controllers
         [HttpPost]
         public async Task<ActionResult<ScheduleGroup>> PostScheduleGroup(ScheduleGroup scheduleGroup)
         {
+            scheduleGroup.Id = Guid.NewGuid();
+
             Collection<OrganizationalUnitScheduleGroup> organizationalUnits = new Collection<OrganizationalUnitScheduleGroup>();
             foreach (var scheduleGroupOrganizationalUnit in scheduleGroup.OrganizationalUnits)
             {

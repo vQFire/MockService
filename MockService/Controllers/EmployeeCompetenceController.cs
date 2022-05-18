@@ -81,6 +81,8 @@ namespace MockService.Controllers
         [HttpPost]
         public async Task<ActionResult<EmployeeContractCompetence>> PostEmployeeContractCompetence(EmployeeContractCompetence employeeContractCompetence)
         {
+            employeeContractCompetence.Id = Guid.NewGuid();
+
             EmployeeContract employeeContract = await _context.EmployeeContracts
                 .Include(c => c.Employee)
                 .FirstOrDefaultAsync(c => c.Employee.Id == employeeContractCompetence.EmployeeContract.Id);

@@ -82,6 +82,8 @@ namespace MockService.Controllers
         [HttpPost]
         public async Task<ActionResult<EmployeeContractExtension>> PostEmployeeContractExtension(EmployeeContractExtension employeeContractExtension)
         {
+            employeeContractExtension.Id = Guid.NewGuid();
+            
             EmployeeContract contract =
                 await _context.EmployeeContracts.FindAsync(employeeContractExtension.EmployeeContract.Id);
             OrganizationalUnit unit =

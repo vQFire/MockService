@@ -76,6 +76,8 @@ namespace MockService.Controllers
         [HttpPost]
         public async Task<ActionResult<OrganizationalUnit>> PostOrganizationalUnit(OrganizationalUnit organizationalUnit)
         {
+            organizationalUnit.Id = Guid.NewGuid();
+            
             _context.OrganizationalUnits.Add(organizationalUnit);
             await _context.SaveChangesAsync();
 
