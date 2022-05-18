@@ -24,7 +24,7 @@ namespace MockService.Controllers
 
         // GET: api/Schedule
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Schedule>>> GetSchedule()
+        public async Task<ActionResult<IEnumerable<Schedule>>> GetSchedules()
         {
             return await _context.Schedule.ToListAsync();
         }
@@ -42,6 +42,16 @@ namespace MockService.Controllers
 
             return schedule;
         }
+        
+        [HttpGet("contract/{id}")]
+        public async Task<ActionResult<IEnumerable<Schedule>>> GetSchedulesByContract(Guid id)
+        {
+            return await _context.Schedule
+                .Include(c => c.EmployeeContract)
+                .Where(c => c.EmployeeContract.Id == id)
+                .ToListAsync();
+        }
+        
 
         // PUT: api/Schedule/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754

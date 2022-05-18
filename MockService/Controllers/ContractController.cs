@@ -21,14 +21,27 @@ namespace MockService.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<EmployeeContract>>> GetEmployeeContracts()
         {
-            return await _context.EmployeeContracts.Include(c => c.Employee).ToListAsync();
+            return await _context.EmployeeContracts
+                .Include(c => c.Employee)
+                .ToListAsync();
+        }
+        
+        [HttpGet("employee/{id}")]
+        public async Task<ActionResult<IEnumerable<EmployeeContract>>> GetEmployeeContractsByEmployee(Guid id)
+        {
+            return await _context.EmployeeContracts
+                .Include(c => c.Employee)
+                .Where(c => c.Employee.Id == id)
+                .ToListAsync();
         }
 
         // GET: api/Contract/5
         [HttpGet("{id}")]
         public async Task<ActionResult<EmployeeContract>> GetEmployeeContract(Guid id)
         {
-            var employeeContract = await _context.EmployeeContracts.Include(c => c.Employee).FirstOrDefaultAsync(c => c.Id == id);
+            var employeeContract = await _context.EmployeeContracts
+                .Include(c => c.Employee)
+                .FirstOrDefaultAsync(c => c.Id == id);
 
             if (employeeContract == null)
             {

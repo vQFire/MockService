@@ -49,6 +49,16 @@ namespace MockService.Controllers
 
             return scheduleGroup;
         }
+        
+        [HttpGet("unit/{id}")]
+        public async Task<ActionResult<IEnumerable<ScheduleGroup>>> GetScheduleGroupByUnit(Guid id)
+        {
+            return await _context.ScheduleGroup
+                .Include(c => c.OrganizationalUnits).ThenInclude(c => c.OrganizationalUnit)
+                .Include(c => c.CompetenceScheduleGroups).ThenInclude(c => c.Competence)
+                .Where(c => c.OrganizationalUnits.Where(u => u.OrganizationalUnit.Id == id).Count() >= 1)
+                .ToListAsync();
+        }
 
         // PUT: api/ScheduleGroup/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754

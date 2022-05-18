@@ -38,7 +38,8 @@ namespace MockService.Controllers
         {
             var employeeContractCompetence = await _context.EmployeeContractCompetences
                 .Include(c => c.Competence)
-                .Include(c => c.EmployeeContract.Employee).FirstOrDefaultAsync(c => c.Id == id);
+                .Include(c => c.EmployeeContract.Employee)
+                .FirstOrDefaultAsync(c => c.Id == id);
 
             if (employeeContractCompetence == null)
             {
@@ -46,6 +47,15 @@ namespace MockService.Controllers
             }
 
             return employeeContractCompetence;
+        }
+        
+        [HttpGet("contract/{id}")]
+        public async Task<ActionResult<IEnumerable<EmployeeContractCompetence>>> GetEmployeeContractCompetencesByContract(Guid id)
+        {
+            return await _context.EmployeeContractCompetences
+                .Include(c => c.Competence)
+                .Where(c => c.EmployeeContract.Id == id)
+                .ToListAsync();
         }
 
         // PUT: api/EmployeeCompetence/5
