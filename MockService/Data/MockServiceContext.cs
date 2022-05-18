@@ -24,5 +24,8 @@ namespace MockService.Data
         public DbSet<ScheduleGroup> ScheduleGroup { get; set; }
         public DbSet<ScheduleGroupSchedule> ScheduleGroupSchedule { get; set; }
         public DbSet<Schedule> Schedule { get; set; }
+        public DbSet<CompetenceScheduleGroup> CompetenceScheduleGroups { get; set; }
+        
+        public DbSet<OrganizationalUnitScheduleGroup> OrganizationalUnitScheduleGroups { get; set; }
     }
 }
