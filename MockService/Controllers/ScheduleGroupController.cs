@@ -87,6 +87,10 @@ namespace MockService.Controllers
                     _context.Entry(organizationalUnit).State = EntityState.Unchanged;
                     organizationalUnits.Add(new OrganizationalUnitScheduleGroup(organizationalUnit));
                 }
+                else
+                {
+                    BadRequest("Unit " +scheduleGroupOrganizationalUnit.OrganizationalUnit.Id + " Not found");
+                }
             }
 
             Collection<CompetenceScheduleGroup> competences = new Collection<CompetenceScheduleGroup>();
@@ -97,6 +101,10 @@ namespace MockService.Controllers
                 {
                     _context.Entry(competence).State = EntityState.Unchanged;
                     competences.Add(new CompetenceScheduleGroup(competence));
+                }
+                else
+                {
+                    BadRequest("Competence " + competenceScheduleGroup.Competence.Id + " Not found");
                 }
             }
 
