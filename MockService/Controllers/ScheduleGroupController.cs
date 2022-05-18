@@ -27,14 +27,20 @@ namespace MockService.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ScheduleGroup>>> GetScheduleGroup()
         {
-            return await _context.ScheduleGroup.ToListAsync();
+            return await _context.ScheduleGroup
+                .Include(c => c.OrganizationalUnits).ThenInclude(c => c.OrganizationalUnit)
+                .Include(c => c.CompetenceScheduleGroups).ThenInclude(c => c.Competence)
+                .ToListAsync();
         }
 
         // GET: api/ScheduleGroup/5
         [HttpGet("{id}")]
         public async Task<ActionResult<ScheduleGroup>> GetScheduleGroup(Guid id)
         {
-            var scheduleGroup = await _context.ScheduleGroup.FindAsync(id);
+            var scheduleGroup = await _context.ScheduleGroup
+                .Include(c => c.OrganizationalUnits).ThenInclude(c => c.OrganizationalUnit)
+                .Include(c => c.CompetenceScheduleGroups).ThenInclude(c => c.Competence)
+                .FirstOrDefaultAsync(c => c.Id == id);
 
             if (scheduleGroup == null)
             {
