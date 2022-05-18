@@ -1,6 +1,7 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -76,6 +77,33 @@ namespace MockService.Controllers
         [HttpPost]
         public async Task<ActionResult<ScheduleGroup>> PostScheduleGroup(ScheduleGroup scheduleGroup)
         {
+            Collection<OrganizationalUnitScheduleGroup> organizationalUnits = new Collection<OrganizationalUnitScheduleGroup>();
+            foreach (var scheduleGroupOrganizationalUnit in scheduleGroup.OrganizationalUnits)
+            {
+                var organizationalUnit =
+                    await _context.OrganizationalUnits.FindAsync(scheduleGroupOrganizationalUnit.OrganizationalUnit.Id);
+                if (organizationalUnit != null)
+                {
+                    _context.Entry(organizationalUnit).State = EntityState.Unchanged;
+                    organizationalUnits.Add(new OrganizationalUnitScheduleGroup(organizationalUnit));
+                }
+            }
+
+            Collection<CompetenceScheduleGroup> competences = new Collection<CompetenceScheduleGroup>();
+            foreach (var competenceScheduleGroup in scheduleGroup.CompetenceScheduleGroups)
+            {
+                var competence = await _context.Competences.FindAsync(competenceScheduleGroup.Competence.Id);
+                if (competence != null)
+                {
+                    _context.Entry(competence).State = EntityState.Unchanged;
+                    competences.Add(new CompetenceScheduleGroup(competence));
+                }
+            }
+
+            scheduleGroup.OrganizationalUnits = organizationalUnits;
+            scheduleGroup.CompetenceScheduleGroups = competences;
+            
+
             _context.ScheduleGroup.Add(scheduleGroup);
             await _context.SaveChangesAsync();
 

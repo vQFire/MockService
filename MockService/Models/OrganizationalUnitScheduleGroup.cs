@@ -2,6 +2,13 @@
 
 public class OrganizationalUnitScheduleGroup
 {
+    
+    public OrganizationalUnitScheduleGroup() {}
+    public OrganizationalUnitScheduleGroup(OrganizationalUnit organizationalUnit)
+    {
+        OrganizationalUnit = organizationalUnit;
+    }
+
     public Guid Id { get; set; }
     public OrganizationalUnit OrganizationalUnit { get; set; }
 }
