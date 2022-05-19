@@ -87,7 +87,23 @@ namespace MockService.Controllers
         public async Task<ActionResult<Schedule>> PostSchedule(Schedule schedule)
         {
             schedule.Id = Guid.NewGuid();
-            
+
+            EmployeeContract contract = await _context.EmployeeContracts.FindAsync(schedule.EmployeeContract.Id);
+            ScheduleGroup scheduleGroup = await _context.ScheduleGroup.FindAsync(schedule.ScheduleGroup.Id);
+
+            if (contract == null)
+            {
+                return NotFound("Contract not Found");
+            }
+
+            if (scheduleGroup == null)
+            {
+                return NotFound("ScheduleGroup not Found");
+            }
+
+            schedule.EmployeeContract = contract;
+            schedule.ScheduleGroup = scheduleGroup;
+
             _context.Schedule.Add(schedule);
             await _context.SaveChangesAsync();
 
