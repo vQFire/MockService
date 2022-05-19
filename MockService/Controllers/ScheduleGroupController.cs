@@ -150,7 +150,11 @@ namespace MockService.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteScheduleGroup(Guid id)
         {
-            var scheduleGroup = await _context.ScheduleGroup.FindAsync(id);
+            var scheduleGroup = await _context.ScheduleGroup
+                .Include(c => c.OrganizationalUnits)
+                .Include(c => c.CompetenceScheduleGroups)
+                .FirstOrDefaultAsync(c => c.Id == id);
+            
             if (scheduleGroup == null)
             {
                 return NotFound();
