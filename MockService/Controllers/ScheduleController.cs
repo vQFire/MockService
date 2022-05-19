@@ -33,7 +33,9 @@ namespace MockService.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Schedule>> GetSchedule(Guid id)
         {
-            var schedule = await _context.Schedule.FindAsync(id);
+            var schedule = await _context.Schedule
+                .Include(c => c.EmployeeContract)
+                .FirstOrDefaultAsync(c => c.Id == id);
 
             if (schedule == null)
             {
