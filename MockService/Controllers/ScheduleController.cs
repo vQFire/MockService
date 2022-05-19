@@ -52,6 +52,32 @@ namespace MockService.Controllers
                 .ToListAsync();
         }
         
+        [HttpGet("contract/{id}/future")]
+        public async Task<ActionResult<IEnumerable<Schedule>>> GetFutureSchedulesByContract(Guid id)
+        {
+            return await _context.Schedule
+                .Include(c => c.EmployeeContract)
+                .Where(c => c.EmployeeContract.Id == id && c.Start.ToUniversalTime().CompareTo(DateTime.Now.ToUniversalTime()) > 0 )
+                .ToListAsync();
+        }
+
+        [HttpGet("contract/{id}/today")]
+        public async Task<ActionResult<IEnumerable<Schedule>>> GetTodaysScheduleByContract(Guid id)
+        {
+            return await _context.Schedule
+                .Include(c => c.EmployeeContract)
+                .Where(c => c.EmployeeContract.Id == id && c.Start.ToUniversalTime().Date == DateTime.Now.Date)
+                .ToListAsync();
+        }
+        
+        [HttpGet("contract/{id}/date/{date}")]
+        public async Task<ActionResult<IEnumerable<Schedule>>> GetScheduleByContractAndDay(Guid id, DateTime date)
+        {
+            return await _context.Schedule
+                .Include(c => c.EmployeeContract)
+                .Where(c => c.EmployeeContract.Id == id && c.Start.ToUniversalTime().Date == date.ToUniversalTime().Date)
+                .ToListAsync();
+        }
 
         // PUT: api/Schedule/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
