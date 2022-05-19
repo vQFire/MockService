@@ -77,6 +77,15 @@ namespace MockService.Controllers
         public async Task<ActionResult<ScheduleGroupSchedule>> PostScheduleGroupSchedule(ScheduleGroupSchedule scheduleGroupSchedule)
         {
             scheduleGroupSchedule.Id = Guid.NewGuid();
+
+            ScheduleGroup scheduleGroup = await _context.ScheduleGroup.FindAsync(scheduleGroupSchedule.ScheduleGroup.Id);
+
+            if (scheduleGroup == null)
+            {
+                return NotFound("ScheduleGroup not Found");
+            }
+
+            scheduleGroupSchedule.ScheduleGroup = scheduleGroup;
             
             _context.ScheduleGroupSchedule.Add(scheduleGroupSchedule);
             await _context.SaveChangesAsync();
