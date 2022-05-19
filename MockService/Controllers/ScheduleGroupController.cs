@@ -56,7 +56,17 @@ namespace MockService.Controllers
             return await _context.ScheduleGroup
                 .Include(c => c.OrganizationalUnits).ThenInclude(c => c.OrganizationalUnit)
                 .Include(c => c.CompetenceScheduleGroups).ThenInclude(c => c.Competence)
-                .Where(c => c.OrganizationalUnits.Where(u => u.OrganizationalUnit.Id == id).Count() >= 1)
+                .Where(c => c.OrganizationalUnits.Any(u => u.OrganizationalUnit.Id == id))
+                .ToListAsync();
+        }
+        
+        [HttpGet("competence/{id}")]
+        public async Task<ActionResult<IEnumerable<ScheduleGroup>>> GetScheduleGroupByCompetence(Guid id)
+        {
+            return await _context.ScheduleGroup
+                .Include(c => c.OrganizationalUnits).ThenInclude(c => c.OrganizationalUnit)
+                .Include(c => c.CompetenceScheduleGroups).ThenInclude(c => c.Competence)
+                .Where(c => c.CompetenceScheduleGroups.Any(u => u.Competence.Id == id))
                 .ToListAsync();
         }
 
