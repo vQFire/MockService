@@ -24,7 +24,7 @@ namespace MockService.Controllers
 
         // GET: api/Schedule
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Schedule>>> GetSchedule()
+        public async Task<ActionResult<IEnumerable<Schedule>>> GetSchedules()
         {
             return await _context.Schedule.ToListAsync();
         }
@@ -33,7 +33,9 @@ namespace MockService.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Schedule>> GetSchedule(Guid id)
         {
-            var schedule = await _context.Schedule.FindAsync(id);
+            var schedule = await _context.Schedule
+                .Include(c => c.EmployeeContract)
+                .FirstOrDefaultAsync(c => c.Id == id);
 
             if (schedule == null)
             {
@@ -42,16 +44,49 @@ namespace MockService.Controllers
 
             return schedule;
         }
+        
+        [HttpGet("contract/{id}")]
+        public async Task<ActionResult<IEnumerable<Schedule>>> GetSchedulesByContract(Guid id)
+        {
+            return await _context.Schedule
+                .Include(c => c.EmployeeContract)
+                .Where(c => c.EmployeeContract.Id == id)
+                .ToListAsync();
+        }
+        
+        [HttpGet("contract/{id}/future")]
+        public async Task<ActionResult<IEnumerable<Schedule>>> GetFutureSchedulesByContract(Guid id)
+        {
+            return await _context.Schedule
+                .Include(c => c.EmployeeContract)
+                .Where(c => c.EmployeeContract.Id == id && c.Start.ToUniversalTime().CompareTo(DateTime.Now.ToUniversalTime()) > 0 )
+                .ToListAsync();
+        }
+
+        [HttpGet("contract/{id}/today")]
+        public async Task<ActionResult<IEnumerable<Schedule>>> GetTodaysScheduleByContract(Guid id)
+        {
+            return await _context.Schedule
+                .Include(c => c.EmployeeContract)
+                .Where(c => c.EmployeeContract.Id == id && c.Start.ToUniversalTime().Date == DateTime.Now.Date)
+                .ToListAsync();
+        }
+        
+        [HttpGet("contract/{id}/date/{date}")]
+        public async Task<ActionResult<IEnumerable<Schedule>>> GetScheduleByContractAndDay(Guid id, DateTime date)
+        {
+            return await _context.Schedule
+                .Include(c => c.EmployeeContract)
+                .Where(c => c.EmployeeContract.Id == id && c.Start.ToUniversalTime().Date == date.ToUniversalTime().Date)
+                .ToListAsync();
+        }
 
         // PUT: api/Schedule/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutSchedule(Guid id, Schedule schedule)
         {
-            if (id != schedule.Id)
-            {
-                return BadRequest();
-            }
+            schedule.Id = id;
 
             _context.Entry(schedule).State = EntityState.Modified;
 
@@ -79,6 +114,24 @@ namespace MockService.Controllers
         [HttpPost]
         public async Task<ActionResult<Schedule>> PostSchedule(Schedule schedule)
         {
+            schedule.Id = Guid.NewGuid();
+
+            EmployeeContract contract = await _context.EmployeeContracts.FindAsync(schedule.EmployeeContract.Id);
+            ScheduleGroup scheduleGroup = await _context.ScheduleGroup.FindAsync(schedule.ScheduleGroup.Id);
+
+            if (contract == null)
+            {
+                return NotFound("Contract not Found");
+            }
+
+            if (scheduleGroup == null)
+            {
+                return NotFound("ScheduleGroup not Found");
+            }
+
+            schedule.EmployeeContract = contract;
+            schedule.ScheduleGroup = scheduleGroup;
+
             _context.Schedule.Add(schedule);
             await _context.SaveChangesAsync();
 

@@ -48,10 +48,7 @@ namespace MockService.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutEmployee(Guid id, Employee employee)
         {
-            if (id != employee.Id)
-            {
-                return BadRequest();
-            }
+            employee.Id = id;
 
             _context.Entry(employee).State = EntityState.Modified;
 
@@ -79,6 +76,8 @@ namespace MockService.Controllers
         [HttpPost]
         public async Task<ActionResult<Employee>> PostEmployee(Employee employee)
         {
+            employee.Id = Guid.NewGuid();
+            
             _context.Employees.Add(employee);
             await _context.SaveChangesAsync();
 

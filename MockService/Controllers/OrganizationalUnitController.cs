@@ -48,10 +48,7 @@ namespace MockService.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutOrganizationalUnit(Guid id, OrganizationalUnit organizationalUnit)
         {
-            if (id != organizationalUnit.Id)
-            {
-                return BadRequest();
-            }
+            organizationalUnit.Id = id;
 
             _context.Entry(organizationalUnit).State = EntityState.Modified;
 
@@ -79,6 +76,8 @@ namespace MockService.Controllers
         [HttpPost]
         public async Task<ActionResult<OrganizationalUnit>> PostOrganizationalUnit(OrganizationalUnit organizationalUnit)
         {
+            organizationalUnit.Id = Guid.NewGuid();
+            
             _context.OrganizationalUnits.Add(organizationalUnit);
             await _context.SaveChangesAsync();
 

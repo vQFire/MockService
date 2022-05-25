@@ -38,7 +38,8 @@ namespace MockService.Controllers
         {
             var employeeContractCompetence = await _context.EmployeeContractCompetences
                 .Include(c => c.Competence)
-                .Include(c => c.EmployeeContract.Employee).FirstOrDefaultAsync(c => c.Id == id);
+                .Include(c => c.EmployeeContract.Employee)
+                .FirstOrDefaultAsync(c => c.Id == id);
 
             if (employeeContractCompetence == null)
             {
@@ -47,16 +48,22 @@ namespace MockService.Controllers
 
             return employeeContractCompetence;
         }
+        
+        [HttpGet("contract/{id}")]
+        public async Task<ActionResult<IEnumerable<EmployeeContractCompetence>>> GetEmployeeContractCompetencesByContract(Guid id)
+        {
+            return await _context.EmployeeContractCompetences
+                .Include(c => c.Competence)
+                .Where(c => c.EmployeeContract.Id == id)
+                .ToListAsync();
+        }
 
         // PUT: api/EmployeeCompetence/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutEmployeeContractCompetence(Guid id, EmployeeContractCompetence employeeContractCompetence)
         {
-            if (id != employeeContractCompetence.Id)
-            {
-                return BadRequest();
-            }
+            employeeContractCompetence.Id = id;
 
             _context.Entry(employeeContractCompetence).State = EntityState.Modified;
 
@@ -84,9 +91,11 @@ namespace MockService.Controllers
         [HttpPost]
         public async Task<ActionResult<EmployeeContractCompetence>> PostEmployeeContractCompetence(EmployeeContractCompetence employeeContractCompetence)
         {
+            employeeContractCompetence.Id = Guid.NewGuid();
+
             EmployeeContract employeeContract = await _context.EmployeeContracts
                 .Include(c => c.Employee)
-                .FirstOrDefaultAsync(c => c.Employee.Id == employeeContractCompetence.EmployeeContract.Id);
+                .FirstOrDefaultAsync(c => c.Id == employeeContractCompetence.EmployeeContract.Id);
             Competence competence = await _context.Competences.FindAsync(employeeContractCompetence.Competence.Id);
             
             if (employeeContract == null)

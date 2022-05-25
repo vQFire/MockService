@@ -1,6 +1,7 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -26,14 +27,20 @@ namespace MockService.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ScheduleGroup>>> GetScheduleGroup()
         {
-            return await _context.ScheduleGroup.ToListAsync();
+            return await _context.ScheduleGroup
+                .Include(c => c.OrganizationalUnits).ThenInclude(c => c.OrganizationalUnit)
+                .Include(c => c.CompetenceScheduleGroups).ThenInclude(c => c.Competence)
+                .ToListAsync();
         }
 
         // GET: api/ScheduleGroup/5
         [HttpGet("{id}")]
         public async Task<ActionResult<ScheduleGroup>> GetScheduleGroup(Guid id)
         {
-            var scheduleGroup = await _context.ScheduleGroup.FindAsync(id);
+            var scheduleGroup = await _context.ScheduleGroup
+                .Include(c => c.OrganizationalUnits).ThenInclude(c => c.OrganizationalUnit)
+                .Include(c => c.CompetenceScheduleGroups).ThenInclude(c => c.Competence)
+                .FirstOrDefaultAsync(c => c.Id == id);
 
             if (scheduleGroup == null)
             {
@@ -42,16 +49,33 @@ namespace MockService.Controllers
 
             return scheduleGroup;
         }
+        
+        [HttpGet("unit/{id}")]
+        public async Task<ActionResult<IEnumerable<ScheduleGroup>>> GetScheduleGroupByUnit(Guid id)
+        {
+            return await _context.ScheduleGroup
+                .Include(c => c.OrganizationalUnits).ThenInclude(c => c.OrganizationalUnit)
+                .Include(c => c.CompetenceScheduleGroups).ThenInclude(c => c.Competence)
+                .Where(c => c.OrganizationalUnits.Any(u => u.OrganizationalUnit.Id == id))
+                .ToListAsync();
+        }
+        
+        [HttpGet("competence/{id}")]
+        public async Task<ActionResult<IEnumerable<ScheduleGroup>>> GetScheduleGroupByCompetence(Guid id)
+        {
+            return await _context.ScheduleGroup
+                .Include(c => c.OrganizationalUnits).ThenInclude(c => c.OrganizationalUnit)
+                .Include(c => c.CompetenceScheduleGroups).ThenInclude(c => c.Competence)
+                .Where(c => c.CompetenceScheduleGroups.Any(u => u.Competence.Id == id))
+                .ToListAsync();
+        }
 
         // PUT: api/ScheduleGroup/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutScheduleGroup(Guid id, ScheduleGroup scheduleGroup)
         {
-            if (id != scheduleGroup.Id)
-            {
-                return BadRequest();
-            }
+            scheduleGroup.Id = id;
 
             _context.Entry(scheduleGroup).State = EntityState.Modified;
 
@@ -79,6 +103,43 @@ namespace MockService.Controllers
         [HttpPost]
         public async Task<ActionResult<ScheduleGroup>> PostScheduleGroup(ScheduleGroup scheduleGroup)
         {
+            scheduleGroup.Id = Guid.NewGuid();
+
+            Collection<OrganizationalUnitScheduleGroup> organizationalUnits = new Collection<OrganizationalUnitScheduleGroup>();
+            foreach (var scheduleGroupOrganizationalUnit in scheduleGroup.OrganizationalUnits)
+            {
+                var organizationalUnit =
+                    await _context.OrganizationalUnits.FindAsync(scheduleGroupOrganizationalUnit.OrganizationalUnit.Id);
+                if (organizationalUnit != null)
+                {
+                    _context.Entry(organizationalUnit).State = EntityState.Unchanged;
+                    organizationalUnits.Add(new OrganizationalUnitScheduleGroup(organizationalUnit));
+                }
+                else
+                {
+                    BadRequest("Unit " +scheduleGroupOrganizationalUnit.OrganizationalUnit.Id + " Not found");
+                }
+            }
+
+            Collection<CompetenceScheduleGroup> competences = new Collection<CompetenceScheduleGroup>();
+            foreach (var competenceScheduleGroup in scheduleGroup.CompetenceScheduleGroups)
+            {
+                var competence = await _context.Competences.FindAsync(competenceScheduleGroup.Competence.Id);
+                if (competence != null)
+                {
+                    _context.Entry(competence).State = EntityState.Unchanged;
+                    competences.Add(new CompetenceScheduleGroup(competence));
+                }
+                else
+                {
+                    BadRequest("Competence " + competenceScheduleGroup.Competence.Id + " Not found");
+                }
+            }
+
+            scheduleGroup.OrganizationalUnits = organizationalUnits;
+            scheduleGroup.CompetenceScheduleGroups = competences;
+            
+
             _context.ScheduleGroup.Add(scheduleGroup);
             await _context.SaveChangesAsync();
 
@@ -89,7 +150,11 @@ namespace MockService.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteScheduleGroup(Guid id)
         {
-            var scheduleGroup = await _context.ScheduleGroup.FindAsync(id);
+            var scheduleGroup = await _context.ScheduleGroup
+                .Include(c => c.OrganizationalUnits)
+                .Include(c => c.CompetenceScheduleGroups)
+                .FirstOrDefaultAsync(c => c.Id == id);
+            
             if (scheduleGroup == null)
             {
                 return NotFound();

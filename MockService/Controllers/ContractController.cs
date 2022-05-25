@@ -21,14 +21,27 @@ namespace MockService.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<EmployeeContract>>> GetEmployeeContracts()
         {
-            return await _context.EmployeeContracts.Include(c => c.Employee).ToListAsync();
+            return await _context.EmployeeContracts
+                .Include(c => c.Employee)
+                .ToListAsync();
+        }
+        
+        [HttpGet("employee/{id}")]
+        public async Task<ActionResult<IEnumerable<EmployeeContract>>> GetEmployeeContractsByEmployee(Guid id)
+        {
+            return await _context.EmployeeContracts
+                .Include(c => c.Employee)
+                .Where(c => c.Employee.Id == id)
+                .ToListAsync();
         }
 
         // GET: api/Contract/5
         [HttpGet("{id}")]
         public async Task<ActionResult<EmployeeContract>> GetEmployeeContract(Guid id)
         {
-            var employeeContract = await _context.EmployeeContracts.Include(c => c.Employee).FirstOrDefaultAsync(c => c.Id == id);
+            var employeeContract = await _context.EmployeeContracts
+                .Include(c => c.Employee)
+                .FirstOrDefaultAsync(c => c.Id == id);
 
             if (employeeContract == null)
             {
@@ -44,11 +57,6 @@ namespace MockService.Controllers
         public async Task<IActionResult> PutEmployeeContract(Guid id, EmployeeContract employeeContract)
         {
             employeeContract.Id = id;
-            
-            if (id != employeeContract.Id)
-            {
-                return BadRequest();
-            }
 
             _context.Entry(employeeContract).State = EntityState.Modified;
 
@@ -76,6 +84,8 @@ namespace MockService.Controllers
         [HttpPost]
         public async Task<ActionResult<EmployeeContract>> PostEmployeeContract(EmployeeContract employeeContract)
         {
+            employeeContract.Id = Guid.NewGuid();
+            
             Employee employee = await _context.Employees.FindAsync(employeeContract.Employee.Id);
             if (employee == null)
             {

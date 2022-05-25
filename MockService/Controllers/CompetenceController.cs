@@ -48,10 +48,7 @@ namespace MockService.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCompetence(Guid id, Competence competence)
         {
-            if (id != competence.Id)
-            {
-                return BadRequest();
-            }
+            competence.Id = id;
 
             _context.Entry(competence).State = EntityState.Modified;
 
@@ -79,6 +76,8 @@ namespace MockService.Controllers
         [HttpPost]
         public async Task<ActionResult<Competence>> PostCompetence(Competence competence)
         {
+            competence.Id = Guid.NewGuid();
+            
             _context.Competences.Add(competence);
             await _context.SaveChangesAsync();
 

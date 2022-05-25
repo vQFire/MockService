@@ -48,16 +48,39 @@ namespace MockService.Controllers
 
             return employeeContractExtension;
         }
+        
+        [HttpGet("contract/{id}")]
+        public async Task<ActionResult<EmployeeContractExtension>> GetEmployeeContractExtensionByContract(Guid id)
+        {
+            var employeeContractExtension = _context.EmployeeContractExtensions
+                .Include(c => c.OrganizationalUnit)
+                .Include(c => c.EmployeeContract.Employee)
+                .FirstOrDefault(c => c.EmployeeContract.Id == id);
+
+            if (employeeContractExtension == null)
+            {
+                return NotFound();
+            }
+
+            return employeeContractExtension;
+        }
+        
+        [HttpGet("unit/{id}")]
+        public async Task<ActionResult<IEnumerable<EmployeeContractExtension>>> GetEmployeeContractExtensionsByUnit(Guid id)
+        {
+            return await _context.EmployeeContractExtensions
+                .Include(c => c.OrganizationalUnit)
+                .Include(c => c.EmployeeContract.Employee)
+                .Where(c => c.OrganizationalUnit.Id == id)
+                .ToListAsync();
+        }
 
         // PUT: api/ContractExtension/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutEmployeeContractExtension(Guid id, EmployeeContractExtension employeeContractExtension)
         {
-            if (id != employeeContractExtension.Id)
-            {
-                return BadRequest();
-            }
+            employeeContractExtension.Id = id;
 
             _context.Entry(employeeContractExtension).State = EntityState.Modified;
 
@@ -85,6 +108,8 @@ namespace MockService.Controllers
         [HttpPost]
         public async Task<ActionResult<EmployeeContractExtension>> PostEmployeeContractExtension(EmployeeContractExtension employeeContractExtension)
         {
+            employeeContractExtension.Id = Guid.NewGuid();
+            
             EmployeeContract contract =
                 await _context.EmployeeContracts.FindAsync(employeeContractExtension.EmployeeContract.Id);
             OrganizationalUnit unit =

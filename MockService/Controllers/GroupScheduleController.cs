@@ -26,14 +26,20 @@ namespace MockService.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ScheduleGroupSchedule>>> GetScheduleGroupSchedule()
         {
-            return await _context.ScheduleGroupSchedule.ToListAsync();
+            return await _context.ScheduleGroupSchedule
+                .Include(c => c.ScheduleGroup.OrganizationalUnits).ThenInclude(c => c.OrganizationalUnit)
+                .Include(c => c.ScheduleGroup.CompetenceScheduleGroups).ThenInclude(c => c.Competence)
+                .ToListAsync();
         }
 
         // GET: api/GroupSchedule/5
         [HttpGet("{id}")]
         public async Task<ActionResult<ScheduleGroupSchedule>> GetScheduleGroupSchedule(Guid id)
         {
-            var scheduleGroupSchedule = await _context.ScheduleGroupSchedule.FindAsync(id);
+            var scheduleGroupSchedule = await _context.ScheduleGroupSchedule
+                .Include(c => c.ScheduleGroup.OrganizationalUnits).ThenInclude(c => c.OrganizationalUnit)
+                .Include(c => c.ScheduleGroup.CompetenceScheduleGroups).ThenInclude(c => c.Competence)
+                .FirstOrDefaultAsync(c => c.Id == id);
 
             if (scheduleGroupSchedule == null)
             {
@@ -48,10 +54,7 @@ namespace MockService.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutScheduleGroupSchedule(Guid id, ScheduleGroupSchedule scheduleGroupSchedule)
         {
-            if (id != scheduleGroupSchedule.Id)
-            {
-                return BadRequest();
-            }
+            scheduleGroupSchedule.Id = id;
 
             _context.Entry(scheduleGroupSchedule).State = EntityState.Modified;
 
@@ -79,6 +82,17 @@ namespace MockService.Controllers
         [HttpPost]
         public async Task<ActionResult<ScheduleGroupSchedule>> PostScheduleGroupSchedule(ScheduleGroupSchedule scheduleGroupSchedule)
         {
+            scheduleGroupSchedule.Id = Guid.NewGuid();
+
+            ScheduleGroup scheduleGroup = await _context.ScheduleGroup.FindAsync(scheduleGroupSchedule.ScheduleGroup.Id);
+
+            if (scheduleGroup == null)
+            {
+                return NotFound("ScheduleGroup not Found");
+            }
+
+            scheduleGroupSchedule.ScheduleGroup = scheduleGroup;
+            
             _context.ScheduleGroupSchedule.Add(scheduleGroupSchedule);
             await _context.SaveChangesAsync();
 
