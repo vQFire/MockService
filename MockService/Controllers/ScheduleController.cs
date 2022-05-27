@@ -45,6 +45,42 @@ namespace MockService.Controllers
             return schedule;
         }
         
+        [HttpGet("employee/{id}")]
+        public async Task<ActionResult<IEnumerable<Schedule>>> GetSchedulesByEmployee(Guid id)
+        {
+            return await _context.Schedule
+                .Include(c => c.EmployeeContract)
+                .Where(c => c.EmployeeContract.Id == id)
+                .ToListAsync();
+        }
+        
+        [HttpGet("employee/{id}/future")]
+        public async Task<ActionResult<IEnumerable<Schedule>>> GetFutureSchedulesByEmployee(Guid id)
+        {
+            return await _context.Schedule
+                .Include(c => c.EmployeeContract)
+                .Where(c => c.EmployeeContract.Id == id && c.Start.ToUniversalTime().CompareTo(DateTime.Now.ToUniversalTime()) > 0 )
+                .ToListAsync();
+        }
+
+        [HttpGet("employee/{id}/today")]
+        public async Task<ActionResult<IEnumerable<Schedule>>> GetTodaysScheduleByEmployee(Guid id)
+        {
+            return await _context.Schedule
+                .Include(c => c.EmployeeContract)
+                .Where(c => c.EmployeeContract.Employee.Id == id && c.Start.ToUniversalTime().Date == DateTime.Now.Date)
+                .ToListAsync();
+        }
+        
+        [HttpGet("employee/{id}/date/{date}")]
+        public async Task<ActionResult<IEnumerable<Schedule>>> GetScheduleByEmployeeAndDay(Guid id, DateTime date)
+        {
+            return await _context.Schedule
+                .Include(c => c.EmployeeContract)
+                .Where(c => c.EmployeeContract.Employee.Id == id && c.Start.ToUniversalTime().Date == date.ToUniversalTime().Date)
+                .ToListAsync();
+        }
+        
         [HttpGet("contract/{id}")]
         public async Task<ActionResult<IEnumerable<Schedule>>> GetSchedulesByContract(Guid id)
         {
