@@ -44,6 +44,17 @@ namespace MockService.Controllers
 
             return schedule;
         }
+
+        [HttpGet("ids")]
+        public async Task<ActionResult<IEnumerable<Schedule>>> GetScheduleByIds([FromBody]IEnumerable<Guid> scheduleIds)
+        {
+            var schedules = await _context.Schedule
+                .Include(c => c.EmployeeContract)
+                .Where(c => scheduleIds.Contains(c.Id))
+                .ToListAsync();
+
+            return schedules;
+        }
         
         [HttpGet("employee/{id}")]
         public async Task<ActionResult<IEnumerable<Schedule>>> GetSchedulesByEmployee(Guid id)
