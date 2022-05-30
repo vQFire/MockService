@@ -14,7 +14,7 @@ Dat moet dan NpSql worden, zie de documentatie voor de juiste connection string,
 Gebruik je een andere DB, doe dan eerst `dotnet ef migrations add Initial --project=MockService`.
 Dit maakt een migration aan voor jouw DB.
 
-Om de database te updaten doe `dotnet ef database update --projectMockService`.
+Om de database te updaten doe `dotnet ef database update --project=MockService`.
 
 Elke keer als je een model aanpast, nieuwe migration maken en verwerken naar de db. Of doe het handmatig...
 
