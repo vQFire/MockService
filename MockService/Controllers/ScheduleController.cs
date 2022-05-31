@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MockService.Data;
+using MockService.Dtos;
 using MockService.Models;
 
 namespace MockService.Controllers
@@ -47,12 +48,23 @@ namespace MockService.Controllers
         // GET: api/Schedule/ids
         // BODY: {"ids": [id1, id2, ...]}
         [HttpGet("ids")]
-        public async Task<ActionResult<IEnumerable<Schedule>>> GetScheduleByIds([FromBody]IEnumerable<Guid> scheduleIds)
+        public async Task<ActionResult<IEnumerable<ScheduleDTO>>> GetScheduleByIds([FromBody]IEnumerable<Guid> scheduleIds)
         {
-            return await _context.Schedule
+            var schedules = await _context.Schedule
                 .Include(c => c.EmployeeContract)
-                .Where(c => scheduleIds.Contains(c.Id))
-                .ToListAsync();
+                .Where(c => scheduleIds.Contains(c.Id)).ToListAsync();
+
+            var scheduleDtos = schedules.Select(c => new ScheduleDTO
+            {
+                Id = c.Id,
+                Date = c.Date,
+                Start = c.Start,
+                End = c.End,
+                Competences = c.ScheduleGroup.CompetenceScheduleGroups.Select(c => c.Competence.Id),
+                EmployeeName = c.EmployeeContract.Employee.Name
+            });
+
+            return new ActionResult<IEnumerable<ScheduleDTO>>(scheduleDtos);
         }
         
         [HttpGet("employee/{id}")]
