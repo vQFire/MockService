@@ -32,7 +32,7 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<MockServiceContext>();
     services.GetRequiredService<MockServiceContext>().Database.Migrate();
-    MockServiceContextSeed.SeedAsync(context);
+    await MockServiceContextSeed.SeedAsync(context);
 }
 // app.Services.GetRequiredService<MockServiceContext>().Database.Migrate();
 
