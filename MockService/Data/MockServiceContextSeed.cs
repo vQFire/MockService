@@ -8,41 +8,18 @@ namespace MockService.Data;
 
 public static class MockServiceContextSeed
 {
+    private const string BasePath = "./Data/SeedData/";
+
     public static async Task SeedAsync(MockServiceContext context)
     {
-        
         try
         {
-            const string basePath = "./Data/SeedData/";
-            if (!context.Employees.Any())
-            {
-                var employeesData = await File.ReadAllTextAsync(basePath + "employees.json");
-                var employees = JsonSerializer.Deserialize<List<Employee>>(employeesData);
-                foreach (var employee in employees!)
-                {
-                    employee.DateOfBirth = employee.DateOfBirth.ToUniversalTime();
-                    context.Employees.Add(employee);
-                }
-                await context.SaveChangesAsync();
-            }
+            await SeedEmployees(context);
+            await SeedOrganizationalUnits(context);
+            await SeedCompetences(context);
+            await SeedEmployeeContracts(context);
 
-            if (!context.EmployeeContracts.Any())
-            {
-                var employeeContractsData = await File.ReadAllTextAsync(basePath + "employeeContracts.json");
-                var employeeContracts = JsonSerializer.Deserialize<List<EmployeeContract>>(employeeContractsData)!;
-                foreach (var employeeContract in employeeContracts)
-                {
-                    employeeContract.ValidFrom = employeeContract.ValidFrom.ToUniversalTime();
-                    employeeContract.ValidTo = employeeContract.ValidTo.ToUniversalTime();
-                    if (employeeContract.TrialPeriodEnd.HasValue)
-                    {
-                        employeeContract.TrialPeriodEnd = employeeContract.TrialPeriodEnd.Value.ToUniversalTime();
-                    }
-                    context.EmployeeContracts.Add(employeeContract);
-                }
-                await context.SaveChangesAsync();
 
-            }
         }
         catch (Exception e)
         {
@@ -50,4 +27,71 @@ public static class MockServiceContextSeed
             Console.WriteLine(e.StackTrace);
         }
     }
+
+    private static async Task SeedEmployees(MockServiceContext context)
+    {
+        if (!context.Employees.Any())
+        {
+            var employeesData = await File.ReadAllTextAsync(BasePath + "employees.json");
+            var employees = JsonSerializer.Deserialize<List<Employee>>(employeesData);
+            foreach (var employee in employees!)
+            {
+                employee.DateOfBirth = employee.DateOfBirth.ToUniversalTime();
+                context.Employees.Add(employee);
+            }
+
+            await context.SaveChangesAsync();
+        }
+    }
+
+    private static async Task SeedOrganizationalUnits(MockServiceContext context)
+    {
+        if (!context.OrganizationalUnits.Any())
+        {
+            var organizationalUnitsData = await File.ReadAllTextAsync(BasePath + "organizationalUnits.json");
+            var organizationalUnits = JsonSerializer.Deserialize<List<OrganizationalUnit>>(organizationalUnitsData);
+            foreach (var organizationalUnit in organizationalUnits!)
+            {
+                context.OrganizationalUnits.Add(organizationalUnit);
+            }
+
+            await context.SaveChangesAsync();
+        }
+    }
+
+    private static async Task SeedCompetences(MockServiceContext context)
+    {
+        if (!context.Competences.Any())
+        {
+            var competencesData = await File.ReadAllTextAsync(BasePath + "competences.json");
+            var competences = JsonSerializer.Deserialize<List<Competence>>(competencesData);
+            foreach (var competence in competences!)
+            {
+                context.Competences.Add(competence);
+            }
+            await context.SaveChangesAsync();
+        }
+    }
+
+    private static async Task SeedEmployeeContracts(MockServiceContext context)
+    {
+        if (!context.EmployeeContracts.Any())
+        {
+            var employeeContractsData = await File.ReadAllTextAsync(BasePath + "employeeContracts.json");
+            var employeeContracts = JsonSerializer.Deserialize<List<EmployeeContract>>(employeeContractsData)!;
+            foreach (var employeeContract in employeeContracts)
+            {
+                employeeContract.ValidFrom = employeeContract.ValidFrom.ToUniversalTime();
+                employeeContract.ValidTo = employeeContract.ValidTo.ToUniversalTime();
+                if (employeeContract.TrialPeriodEnd.HasValue)
+                {
+                    employeeContract.TrialPeriodEnd = employeeContract.TrialPeriodEnd.Value.ToUniversalTime();
+                }
+                context.EmployeeContracts.Add(employeeContract);
+            }
+            await context.SaveChangesAsync();
+        }
+    }
+    
+    
 }

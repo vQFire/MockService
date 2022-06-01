@@ -1,0 +1,31 @@
+[{
+  "Id": "aa251694-1ec8-4699-9799-f4fc62ff52f4",
+  "Code": "VVLEINO",
+  "Name": "V&V Leiden Noord"
+},
+{
+  "Id": "70675791-3ae4-4808-81d5-c9541b1120b7",
+  "Code": "VVLEIZU",
+  "Name": "V&V Leiden Zuid"
+},
+{
+  "Id": "7e4cb77a-f9d2-44f9-97ff-75a7b358e927",
+  "Code": "LAB Oost",
+  "Name": "LAB Oost"
+},
+{
+  "Id": "60dd7d99-282c-4775-bcdb-9bb21dd0579c",
+  "Code": "LAB West",
+  "Name": "LAB West"
+},
+{
+  "Id": "94484155-8266-4825-9758-41030e29789a",
+  "Code": "AMBULANT",
+  "Name": "Ambulante medewerkers"
+},
+{
+  "Id": "192a7f34-c01b-497b-ab99-df2fdf462434",
+  "Code": "HVZLEI",
+  "Name": "Hart- en vaatziekten Leiden"
+}
+]
