@@ -18,7 +18,7 @@ public static class MockServiceContextSeed
             await SeedOrganizationalUnits(context);
             await SeedCompetences(context);
             await SeedEmployeeContracts(context);
-
+            await SeedEmployeeContractCompetences(context);
 
         }
         catch (Exception e)
@@ -27,6 +27,8 @@ public static class MockServiceContextSeed
             Console.WriteLine(e.StackTrace);
         }
     }
+
+    
 
     private static async Task SeedEmployees(MockServiceContext context)
     {
@@ -88,6 +90,22 @@ public static class MockServiceContextSeed
                     employeeContract.TrialPeriodEnd = employeeContract.TrialPeriodEnd.Value.ToUniversalTime();
                 }
                 context.EmployeeContracts.Add(employeeContract);
+            }
+            await context.SaveChangesAsync();
+        }
+    }
+    
+    private static async Task SeedEmployeeContractCompetences(MockServiceContext context)
+    {
+        if (!context.EmployeeContractCompetences.Any())
+        {
+            var employeeContractCompetencesData = await File.ReadAllTextAsync(BasePath + "employeeContractCompetences.json");
+            var employeeContractCompetences = JsonSerializer.Deserialize<List<EmployeeContractCompetence>>(employeeContractCompetencesData)!;
+            foreach (var employeeContractCompetence in employeeContractCompetences)
+            {
+                employeeContractCompetence.validFrom = employeeContractCompetence.validFrom.ToUniversalTime();
+                employeeContractCompetence.validTo = employeeContractCompetence.validTo.ToUniversalTime();
+                context.EmployeeContractCompetences.Add(employeeContractCompetence);
             }
             await context.SaveChangesAsync();
         }
