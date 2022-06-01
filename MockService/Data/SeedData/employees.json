@@ -1,8 +1,34 @@
-[{
-   "Id": "d80424f8-d84f-4ab2-9004-dc8e4939e9e4",
-   "Gender": 1,
-   "Initials": "SV",
-   "FirstName": "Sandra",
-   "Name": "de Vis",
-   "DateOfBirth": "1986-01-04T13:42:32+02:00"
- }]
+[
+   {
+      "Id": "d80424f8-d84f-4ab2-9004-dc8e4939e9e4",
+      "Gender": 1,
+      "Initials": "UM1",
+      "FirstName": "Uitvoerend",
+      "Name": "Medewerker1",
+      "DateOfBirth": "1986-01-04T00:00:00+02:00"
+   },
+   {
+      "Id": "10282b19-90e3-4fcd-8927-114171d24beb",
+      "Gender": 0,
+      "Initials": "UM2",
+      "FirstName": "Uitvoerend",
+      "Name": "Medewerker2",
+      "DateOfBirth": "1991-12-23T00:00:00+02:00"
+   },
+   {
+      "Id": "9b57e45d-5c23-4f0c-848e-36a672e5a6ad",
+      "Gender": 2,
+      "Initials": "RM",
+      "FirstName": "Rooster",
+      "Name": "Maker",
+      "DateOfBirth": "1980-07-30T00:00:00+02:00"
+   },
+   {
+      "Id": "020af46e-7fba-4e30-a6f7-96db86a8e5bd",
+      "Gender": 1,
+      "Initials": "AD",
+      "FirstName": "Ad",
+      "Name": "Min",
+      "DateOfBirth": "1977-08-01T00:00:00+02:00"
+   }
+]

@@ -1,8 +1,18 @@
-[{
-  "Id": "2a62c932-3a59-4b3c-847e-696d39c93c17",
-  "EmployeeId": "d80424f8-d84f-4ab2-9004-dc8e4939e9e4",
-  "ScheduleCompetence": "schedule Competence goes here",
-  "TrialPeriodEnd": "2021-01-04T13:42:32+02:00",
-  "ValidFrom": "2021-01-04T13:42:32+02:00",
-  "ValidTo": "2024-07-04T13:42:32+02:00"
-}]
+[
+  {
+    "Id": "2a62c932-3a59-4b3c-847e-696d39c93c17",
+    "EmployeeId": "d80424f8-d84f-4ab2-9004-dc8e4939e9e4",
+    "ScheduleCompetence": "schedule Competence goes here",
+    "TrialPeriodEnd": "2021-01-04T13:42:32+02:00",
+    "ValidFrom": "2021-01-04T13:42:32+02:00",
+    "ValidTo": "2024-07-04T13:42:32+02:00"
+  },
+  {
+    "Id": "3838aff6-ab90-414f-a92b-b7293acd94f6",
+    "EmployeeId": "10282b19-90e3-4fcd-8927-114171d24beb",
+    "ScheduleCompetence": "schedule Competence goes here",
+    "TrialPeriodEnd": "2019-11-04T12:00:00+02:00",
+    "ValidFrom": "2019-05-04T12:00:00+02:00",
+    "ValidTo": "2022-07-01T12:00:00+02:00"
+  }
+]

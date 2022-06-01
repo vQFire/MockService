@@ -1,7 +1,16 @@
-﻿[{
-  "Id": "4360e3d6-a52c-4e3d-aeb5-d95d866e4766",
-  "EmployeeContractId"  : "2a62c932-3a59-4b3c-847e-696d39c93c17",
-  "CompetenceId"  : "27132be5-961b-4d8d-91e5-62423def0ad1",
-  "validFrom" : "2013-01-04T00:00:00+00:00",
-  "validTo" : "2023-01-04T00:00:00+00:00"
-}]
+﻿[
+  {
+    "Id": "4360e3d6-a52c-4e3d-aeb5-d95d866e4766",
+    "EmployeeContractId": "2a62c932-3a59-4b3c-847e-696d39c93c17",
+    "CompetenceId": "27132be5-961b-4d8d-91e5-62423def0ad1",
+    "validFrom": "2013-01-04T00:00:00+00:00",
+    "validTo": "2023-01-04T00:00:00+00:00"
+  },
+  {
+    "Id": "39dbed71-17f7-4471-8529-09eae1e525ec",
+    "EmployeeContractId": "3838aff6-ab90-414f-a92b-b7293acd94f6",
+    "CompetenceId": "a8acb019-e274-47e3-aa1e-60cd74055d67",
+    "validFrom": "2018-02-02T00:00:00+00:00",
+    "validTo": "2023-02-02T00:00:00+00:00"
+  }
+]
