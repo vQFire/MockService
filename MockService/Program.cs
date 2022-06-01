@@ -27,7 +27,11 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// app.Services.GetRequiredService<MockServiceContext>().Database.Migrate();
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    services.GetRequiredService<MockServiceContext>().Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
