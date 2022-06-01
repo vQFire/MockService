@@ -1,8 +1,5 @@
 ﻿using System.Text.Json;
-using Microsoft.EntityFrameworkCore;
-using MockService.Enums;
 using MockService.Models;
-using NuGet.Protocol;
 
 namespace MockService.Data;
 
@@ -21,6 +18,9 @@ public static class MockServiceContextSeed
             await SeedEmployeeContractCompetences(context);
             await SeedCompetenceScheduleGroups(context);
             await SeedEmployeeContractExtensions(context);
+            await SeedOrganizationalUnitScheduleGroups(context);
+            await SeedScheduleGroups(context);
+            await SeedScheduleGroupSchedules(context);
 
         }
         catch (Exception e)
@@ -149,6 +149,56 @@ public static class MockServiceContextSeed
                 employeeContractExtension.validFrom = employeeContractExtension.validFrom.ToUniversalTime();
                 employeeContractExtension.validTo = employeeContractExtension.validTo.ToUniversalTime();
                 context.EmployeeContractExtensions.Add(employeeContractExtension);
+            }
+            await context.SaveChangesAsync();
+        }
+    }
+
+    private static async Task SeedOrganizationalUnitScheduleGroups(MockServiceContext context)
+    {
+        if (!context.OrganizationalUnitScheduleGroups.Any())
+        {
+            var organizationalUnitScheduleGroupsData =
+                await File.ReadAllTextAsync(BasePath + "organizationalUnitScheduleGroups.json");
+            var organizationalUnitScheduleGroups =
+                JsonSerializer.Deserialize<List<OrganizationalUnitScheduleGroup>>(organizationalUnitScheduleGroupsData)!;
+            foreach (var organizationalUnitScheduleGroup in organizationalUnitScheduleGroups)
+            {
+                context.OrganizationalUnitScheduleGroups.Add(organizationalUnitScheduleGroup);
+            }
+            await context.SaveChangesAsync();
+        }
+    }
+    
+    private static async Task SeedScheduleGroups(MockServiceContext context)
+    {
+        if (!context.ScheduleGroup.Any())
+        {
+            var scheduleGroupsData =
+                await File.ReadAllTextAsync(BasePath + "scheduleGroups.json");
+            var scheduleGroups =
+                JsonSerializer.Deserialize<List<ScheduleGroup>>(scheduleGroupsData)!;
+            foreach (var scheduleGroup in scheduleGroups)
+            {
+                context.ScheduleGroup.Add(scheduleGroup);
+            }
+            await context.SaveChangesAsync();
+        }
+    }
+    
+    private static async Task SeedScheduleGroupSchedules(MockServiceContext context)
+    {
+        if (!context.ScheduleGroupSchedule.Any())
+        {
+            var scheduleGroupSchedulesData =
+                await File.ReadAllTextAsync(BasePath + "scheduleGroupSchedules.json");
+            var scheduleGroupSchedules =
+                JsonSerializer.Deserialize<List<ScheduleGroupSchedule>>(scheduleGroupSchedulesData)!;
+            foreach (var scheduleGroupSchedule in scheduleGroupSchedules)
+            {
+                scheduleGroupSchedule.Start = scheduleGroupSchedule.Start.ToUniversalTime();
+                scheduleGroupSchedule.End = scheduleGroupSchedule.End.ToUniversalTime();
+                context.ScheduleGroupSchedule.Add(scheduleGroupSchedule);
             }
             await context.SaveChangesAsync();
         }
