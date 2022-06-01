@@ -19,6 +19,7 @@ public static class MockServiceContextSeed
             await SeedCompetences(context);
             await SeedEmployeeContracts(context);
             await SeedEmployeeContractCompetences(context);
+            await SeedCompetenceScheduleGroups(context);
 
         }
         catch (Exception e)
@@ -111,5 +112,17 @@ public static class MockServiceContextSeed
         }
     }
     
-    
+    private static async Task SeedCompetenceScheduleGroups(MockServiceContext context)
+    {
+        if (!context.CompetenceScheduleGroups.Any())
+        {
+            var competenceScheduleGroupsData = await File.ReadAllTextAsync(BasePath + "employeeContractCompetences.json");
+            var competenceScheduleGroups = JsonSerializer.Deserialize<List<CompetenceScheduleGroup>>(competenceScheduleGroupsData)!;
+            foreach (var competenceScheduleGroup in competenceScheduleGroups)
+            {
+                context.CompetenceScheduleGroups.Add(competenceScheduleGroup);
+            }
+            await context.SaveChangesAsync();
+        }
+    }
 }
