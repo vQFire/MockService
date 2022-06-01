@@ -20,6 +20,7 @@ public static class MockServiceContextSeed
             await SeedEmployeeContracts(context);
             await SeedEmployeeContractCompetences(context);
             await SeedCompetenceScheduleGroups(context);
+            await SeedEmployeeContractExtensions(context);
 
         }
         catch (Exception e)
@@ -29,7 +30,7 @@ public static class MockServiceContextSeed
         }
     }
 
-    
+
 
     private static async Task SeedEmployees(MockServiceContext context)
     {
@@ -72,6 +73,7 @@ public static class MockServiceContextSeed
             {
                 context.Competences.Add(competence);
             }
+
             await context.SaveChangesAsync();
         }
     }
@@ -90,39 +92,66 @@ public static class MockServiceContextSeed
                 {
                     employeeContract.TrialPeriodEnd = employeeContract.TrialPeriodEnd.Value.ToUniversalTime();
                 }
+
                 context.EmployeeContracts.Add(employeeContract);
             }
+
             await context.SaveChangesAsync();
         }
     }
-    
+
     private static async Task SeedEmployeeContractCompetences(MockServiceContext context)
     {
         if (!context.EmployeeContractCompetences.Any())
         {
-            var employeeContractCompetencesData = await File.ReadAllTextAsync(BasePath + "employeeContractCompetences.json");
-            var employeeContractCompetences = JsonSerializer.Deserialize<List<EmployeeContractCompetence>>(employeeContractCompetencesData)!;
+            var employeeContractCompetencesData =
+                await File.ReadAllTextAsync(BasePath + "employeeContractCompetences.json");
+            var employeeContractCompetences =
+                JsonSerializer.Deserialize<List<EmployeeContractCompetence>>(employeeContractCompetencesData)!;
             foreach (var employeeContractCompetence in employeeContractCompetences)
             {
                 employeeContractCompetence.validFrom = employeeContractCompetence.validFrom.ToUniversalTime();
                 employeeContractCompetence.validTo = employeeContractCompetence.validTo.ToUniversalTime();
                 context.EmployeeContractCompetences.Add(employeeContractCompetence);
             }
+
             await context.SaveChangesAsync();
         }
     }
-    
+
     private static async Task SeedCompetenceScheduleGroups(MockServiceContext context)
     {
         if (!context.CompetenceScheduleGroups.Any())
         {
-            var competenceScheduleGroupsData = await File.ReadAllTextAsync(BasePath + "employeeContractCompetences.json");
-            var competenceScheduleGroups = JsonSerializer.Deserialize<List<CompetenceScheduleGroup>>(competenceScheduleGroupsData)!;
+            var competenceScheduleGroupsData =
+                await File.ReadAllTextAsync(BasePath + "employeeContractCompetences.json");
+            var competenceScheduleGroups =
+                JsonSerializer.Deserialize<List<CompetenceScheduleGroup>>(competenceScheduleGroupsData)!;
             foreach (var competenceScheduleGroup in competenceScheduleGroups)
             {
                 context.CompetenceScheduleGroups.Add(competenceScheduleGroup);
             }
+
             await context.SaveChangesAsync();
         }
     }
+
+    private static async Task SeedEmployeeContractExtensions(MockServiceContext context)
+    {
+        if (!context.EmployeeContractExtensions.Any())
+        {
+            var employeeContractExtensionsData =
+                await File.ReadAllTextAsync(BasePath + "employeeContractExtensions.json");
+            var employeeContractExtensions =
+                JsonSerializer.Deserialize<List<EmployeeContractExtension>>(employeeContractExtensionsData)!;
+            foreach (var employeeContractExtension in employeeContractExtensions)
+            {
+                employeeContractExtension.validFrom = employeeContractExtension.validFrom.ToUniversalTime();
+                employeeContractExtension.validTo = employeeContractExtension.validTo.ToUniversalTime();
+                context.EmployeeContractExtensions.Add(employeeContractExtension);
+            }
+            await context.SaveChangesAsync();
+        }
+    }
+
 }
