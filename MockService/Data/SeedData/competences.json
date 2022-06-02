@@ -1,0 +1,25 @@
+[{
+  "Id": "140e2258-cf38-48a6-84a5-67ed85af43c5",
+  "Code": "Ig1",
+  "Name": "Verzorgende iG1"
+},
+{
+  "Id": "a4c72265-8a17-4755-9593-af8a2b5e9427",
+  "Code": "Ig2",
+  "Name": "Verzorgende iG2"
+},
+{
+  "Id": "27132be5-961b-4d8d-91e5-62423def0ad1",
+  "Code": "Ig3",
+  "Name": "Verzorgende iG3"
+},
+{
+  "Id": "a8acb019-e274-47e3-aa1e-60cd74055d67",
+  "Code": "Niv1",
+  "Name": "Helpende Niv 1"
+},
+{
+  "Id": "96b3dab1-79a7-48f8-9911-13c8631e3241",
+  "Code": "Niv2",
+  "Name": "Helpende Niv 2"
+}]
