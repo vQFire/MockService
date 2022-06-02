@@ -1,56 +1,65 @@
 ﻿[
   {
     "Id": "ec1542e0-a2c9-43d0-ab31-357cc8fd6adb",
-    "Description": "OD1",
+    "Code": "OD1",
+    "Description": "OchtendDienst1",
     "isValid": true,
-    "IgNorInCalculations": false
+    "IgnoreInCalculations": false
   },
   {
     "Id": "4a47ca97-ee08-4d47-9f18-a9b75b2ae067",
-    "Description": "OD2",
+    "Code": "OD2",
+    "Description": "OchtendDienst2",
     "isValid": true,
-    "IgNorInCalculations": false
+    "IgnoreInCalculations": false
   },
   {
     "Id": "3e7f7adb-fc4e-43c8-9600-276434af27c6",
-    "Description": "MD1",
+    "Code": "MD1",
+    "Description": "MiddagDienst1",
     "isValid": true,
-    "IgNorInCalculations": false
+    "IgnoreInCalculations": false
   },
   {
     "Id": "73bcefae-dfcc-4ff8-871c-d1bdf66d40da",
-    "Description": "MD2",
+    "Code": "MD2",
+    "Description": "MiddagDienst2",
     "isValid": true,
-    "IgNorInCalculations": false
+    "IgnoreInCalculations": false
   },
   {
     "Id": "8205f81d-74f8-4132-a834-96d1110815ec",
-    "Description": "AD1",
+    "Code": "AD1",
+    "Description": "AvondDienst1",
     "isValid": true,
-    "IgNorInCalculations": false
+    "IgnoreInCalculations": false
   },
   {
     "Id": "c40567ed-b17e-48f0-8b5a-96156f5e2757",
-    "Description": "AD2",
+    "Code": "AD2",
+    "Description": "AvondDienst2",
     "isValid": true,
-    "IgNorInCalculations": false
+    "IgnoreInCalculations": false
   },
   {
     "Id": "dc48c143-0085-46e6-ba70-f64efa01d955",
-    "Description": "OPR1",
+    "Code": "OPR1",
+    "Description": "Oproep1",
     "isValid": true,
-    "IgNorInCalculations": false
+    "IgnoreInCalculations": false
   },
   {
     "Id": "1d723432-7749-4bb3-82e0-ef77a489e59c",
-    "Description": "OPR2",
+    "Code": "OPR2",
+    "Description": "Oroep2",
     "isValid": true,
-    "IgNorInCalculations": false
+    "IgnoreInCalculations": false
   },
   {
     "Id": "421a9817-c68f-4511-89ab-09ade0e998d8",
-    "Description": "ZIEK",
+    "Code": "ZIEK",
+    "Description": "Ziek",
     "isValid": true,
-    "IgNorInCalculations": false
+    "IgnoreInCalculations": false
   }
 ]

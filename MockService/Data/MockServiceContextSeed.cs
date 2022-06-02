@@ -126,7 +126,7 @@ public static class MockServiceContextSeed
         if (!context.CompetenceScheduleGroups.Any())
         {
             var competenceScheduleGroupsData =
-                await File.ReadAllTextAsync(BasePath + "employeeContractCompetences.json");
+                await File.ReadAllTextAsync(BasePath + "competenceScheduleGroups.json");
             var competenceScheduleGroups =
                 JsonSerializer.Deserialize<List<CompetenceScheduleGroup>>(competenceScheduleGroupsData)!;
             foreach (var competenceScheduleGroup in competenceScheduleGroups)
