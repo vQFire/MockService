@@ -21,6 +21,7 @@ public static class MockServiceContextSeed
             await SeedOrganizationalUnitScheduleGroups(context);
             await SeedScheduleGroups(context);
             await SeedScheduleGroupSchedules(context);
+            await SeedSchedules(context);
 
         }
         catch (Exception e)
@@ -204,4 +205,22 @@ public static class MockServiceContextSeed
         }
     }
 
+    private static async Task SeedSchedules(MockServiceContext context)
+    {
+        if (!context.Schedule.Any())
+        {
+            var schedulesData =
+                await File.ReadAllTextAsync(BasePath + "schedules.json");
+            var schedules =
+                JsonSerializer.Deserialize<List<Schedule>>(schedulesData)!;
+            foreach (var schedule in schedules)
+            {
+                schedule.Date = schedule.Date.ToUniversalTime();
+                schedule.Start = schedule.Start.ToUniversalTime();
+                schedule.End = schedule.End.ToUniversalTime();
+                context.Schedule.Add(schedule);
+            }
+            await context.SaveChangesAsync();
+        }
+    }
 }
