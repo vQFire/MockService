@@ -1,0 +1,58 @@
+﻿[
+  {
+    "Id": "3355b191-0268-4697-b64f-a5dba089adc6",
+    "ScheduleGroupId": "ec1542e0-a2c9-43d0-ab31-357cc8fd6adb",
+    "ScheduleType": 1,
+    "Start": "2022-01-01T09:00:00+00:00",
+    "End": "2022-01-01T12:00:00+00:00"
+  },
+  {
+    "Id": "281550c2-f365-4031-a763-b5d7a8133e4f",
+    "ScheduleGroupId": "3e7f7adb-fc4e-43c8-9600-276434af27c6",
+    "ScheduleType": 1,
+    "Start": "2022-01-01T12:00:00+00:00",
+    "End": "2022-01-01T16:00:00+00:00"
+  },
+  {
+    "Id": "11231bb5-df12-4d31-9aab-f45d77e536c8",
+    "ScheduleGroupId": "8205f81d-74f8-4132-a834-96d1110815ec",
+    "ScheduleType": 1,
+    "Start": "2022-01-01T18:00:00+00:00",
+    "End": "2022-01-01T22:00:00+00:00"
+  },
+  {
+    "Id": "74988f22-e2be-4f2c-8053-43cfc8ac4394",
+    "ScheduleGroupId": "4a47ca97-ee08-4d47-9f18-a9b75b2ae067",
+    "ScheduleType": 1,
+    "Start": "2022-01-01T07:00:00+00:00",
+    "End": "2022-01-01T11:00:00+00:00"
+  },
+  {
+    "Id": "75388366-9fc6-4483-9410-f70ec49d5376",
+    "ScheduleGroupId": "73bcefae-dfcc-4ff8-871c-d1bdf66d40da",
+    "ScheduleType": 1,
+    "Start": "2022-01-01T12:30:00+00:00",
+    "End": "2022-01-01T16:00:00+00:00"
+  },
+  {
+    "Id": "02638932-fef7-4019-9158-576892f32039",
+    "ScheduleGroupId": "c40567ed-b17e-48f0-8b5a-96156f5e2757",
+    "ScheduleType": 1,
+    "Start": "2022-01-01T17:15:00+00:00",
+    "End": "2022-01-01T23:00:00+00:00"
+  },
+  {
+    "Id": "14c54208-eb00-490c-9003-4c1899bcdbee",
+    "ScheduleGroupId": "421a9817-c68f-4511-89ab-09ade0e998d8",
+    "ScheduleType": 3,
+    "Start": "2022-01-01T07:00:00+00:00",
+    "End": "2022-01-01T22:00:00+00:00"
+  },
+  {
+    "Id": "06b4b241-f574-40e8-94c9-98bedb9b61cd",
+    "ScheduleGroupId": "dc48c143-0085-46e6-ba70-f64efa01d955",
+    "ScheduleType": 4,
+    "Start": "2022-01-01T09:00:00+00:00",
+    "End": "2022-01-01T17:00:00+00:00"
+  }
+]

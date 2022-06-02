@@ -1,0 +1,22 @@
+﻿[
+  {
+    "Id": "fda1f964-f222-4390-b307-7f4ca80dc778",
+    "EmployeeContractId": "2a62c932-3a59-4b3c-847e-696d39c93c17",
+    "OrganizationalUnitId": "aa251694-1ec8-4699-9799-f4fc62ff52f4",
+    "Function": "Function 1",
+    "LaborMinutesPerWeekMin": 1200,
+    "LaborMinutesPerWeekMax": 2400,
+    "validFrom": "2022-01-01T00:00:00+00:00",
+    "validTo": "2022-12-31T00:00:00+00:00"
+  },
+  {
+    "Id": "0f82eff9-f794-419f-b471-dd5bd638bd3b",
+    "EmployeeContractId": "3838aff6-ab90-414f-a92b-b7293acd94f6",
+    "OrganizationalUnitId": "7e4cb77a-f9d2-44f9-97ff-75a7b358e927",
+    "Function": "Function 2",
+    "LaborMinutesPerWeekMin": 600,
+    "LaborMinutesPerWeekMax": 1800,
+    "validFrom": "2021-01-01T00:00:00+00:00",
+    "validTo": "2026-12-31T00:00:00+00:00"
+  }
+]

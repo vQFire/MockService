@@ -30,8 +30,11 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<MockServiceContext>();
     services.GetRequiredService<MockServiceContext>().Database.Migrate();
+    await MockServiceContextSeed.SeedAsync(context);
 }
+// app.Services.GetRequiredService<MockServiceContext>().Database.Migrate();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
