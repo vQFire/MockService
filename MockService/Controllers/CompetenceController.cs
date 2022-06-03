@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MockService.Data;
+using MockService.Dtos;
 using MockService.Models;
 
 namespace MockService.Controllers
@@ -74,14 +75,20 @@ namespace MockService.Controllers
         // POST: api/Competence
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Competence>> PostCompetence(Competence competence)
+        public async Task<ActionResult<Competence>> PostCompetence(CreateCompetenceDTO competence)
         {
-            competence.Id = Guid.NewGuid();
+            var id = Guid.NewGuid();
+            var newCompetence = new Competence
+            {
+                Id = id,
+                Code = competence.Code,
+                Name = competence.Name
+            };
             
-            _context.Competences.Add(competence);
+            _context.Competences.Add(newCompetence);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCompetence", new { id = competence.Id }, competence);
+            return CreatedAtAction("GetCompetence", new { id = newCompetence.Id }, newCompetence);
         }
 
         // DELETE: api/Competence/5

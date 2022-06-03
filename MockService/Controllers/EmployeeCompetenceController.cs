@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MockService.Data;
+using MockService.Dtos;
 using MockService.Models;
 
 namespace MockService.Controllers
@@ -89,14 +90,14 @@ namespace MockService.Controllers
         // POST: api/EmployeeCompetence
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<EmployeeContractCompetence>> PostEmployeeContractCompetence(EmployeeContractCompetence employeeContractCompetence)
+        public async Task<ActionResult<EmployeeContractCompetence>> PostEmployeeContractCompetence(CreateEmployeeCompetenceDTO employeeContractCompetence)
         {
-            employeeContractCompetence.Id = Guid.NewGuid();
+            var id = Guid.NewGuid();
 
             EmployeeContract employeeContract = await _context.EmployeeContracts
                 .Include(c => c.Employee)
-                .FirstOrDefaultAsync(c => c.Id == employeeContractCompetence.EmployeeContract.Id);
-            Competence competence = await _context.Competences.FindAsync(employeeContractCompetence.Competence.Id);
+                .FirstOrDefaultAsync(c => c.Id == employeeContractCompetence.EmployeeContractID);
+            Competence competence = await _context.Competences.FindAsync(employeeContractCompetence.CompetenceID);
             
             if (employeeContract == null)
             {
@@ -108,13 +109,19 @@ namespace MockService.Controllers
                 return NotFound("Competence not Found");
             }
             
-            employeeContractCompetence.EmployeeContract = employeeContract;
-            employeeContractCompetence.Competence = competence;
+            var newEmployeeContractCompetence = new EmployeeContractCompetence
+            {
+                Id = id,
+                EmployeeContract = employeeContract,
+                Competence = competence,
+                validFrom = employeeContractCompetence.ValidFrom,
+                validTo = employeeContractCompetence.ValidTo
+            };
 
-            _context.EmployeeContractCompetences.Add(employeeContractCompetence);
+            _context.EmployeeContractCompetences.Add(newEmployeeContractCompetence);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetEmployeeContractCompetence", new { id = employeeContractCompetence.Id }, employeeContractCompetence);
+            return CreatedAtAction("GetEmployeeContractCompetence", new { id = newEmployeeContractCompetence.Id }, newEmployeeContractCompetence);
         }
 
         // DELETE: api/EmployeeCompetence/5
