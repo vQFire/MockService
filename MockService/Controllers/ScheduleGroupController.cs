@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MockService.Data;
+using MockService.Dtos;
 using MockService.Models;
 
 namespace MockService.Controllers
@@ -101,15 +102,13 @@ namespace MockService.Controllers
         // POST: api/ScheduleGroup
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<ScheduleGroup>> PostScheduleGroup(ScheduleGroup scheduleGroup)
+        public async Task<ActionResult<ScheduleGroup>> PostScheduleGroup(CreateScheduleGroupDTO scheduleGroup)
         {
-            scheduleGroup.Id = Guid.NewGuid();
-
             Collection<OrganizationalUnitScheduleGroup> organizationalUnits = new Collection<OrganizationalUnitScheduleGroup>();
-            foreach (var scheduleGroupOrganizationalUnit in scheduleGroup.OrganizationalUnits)
+            foreach (var scheduleGroupOrganizationalUnitID in scheduleGroup.OrganizationalUnitIDs)
             {
                 var organizationalUnit =
-                    await _context.OrganizationalUnits.FindAsync(scheduleGroupOrganizationalUnit.OrganizationalUnit.Id);
+                    await _context.OrganizationalUnits.FindAsync(scheduleGroupOrganizationalUnitID);
                 if (organizationalUnit != null)
                 {
                     _context.Entry(organizationalUnit).State = EntityState.Unchanged;
@@ -117,14 +116,14 @@ namespace MockService.Controllers
                 }
                 else
                 {
-                    BadRequest("Unit " +scheduleGroupOrganizationalUnit.OrganizationalUnit.Id + " Not found");
+                    BadRequest("Unit " +scheduleGroupOrganizationalUnitID + " Not found");
                 }
             }
 
             Collection<CompetenceScheduleGroup> competences = new Collection<CompetenceScheduleGroup>();
-            foreach (var competenceScheduleGroup in scheduleGroup.CompetenceScheduleGroups)
+            foreach (var competenceScheduleGroupID in scheduleGroup.CompetenceScheduleGroupIds)
             {
-                var competence = await _context.Competences.FindAsync(competenceScheduleGroup.Competence.Id);
+                var competence = await _context.Competences.FindAsync(competenceScheduleGroupID);
                 if (competence != null)
                 {
                     _context.Entry(competence).State = EntityState.Unchanged;
@@ -132,18 +131,21 @@ namespace MockService.Controllers
                 }
                 else
                 {
-                    BadRequest("Competence " + competenceScheduleGroup.Competence.Id + " Not found");
+                    BadRequest("Competence " + competenceScheduleGroupID + " Not found");
                 }
             }
 
-            scheduleGroup.OrganizationalUnits = organizationalUnits;
-            scheduleGroup.CompetenceScheduleGroups = competences;
-            
+            var newScheduleGroup = new ScheduleGroup();
+            newScheduleGroup.OrganizationalUnits = organizationalUnits;
+            newScheduleGroup.CompetenceScheduleGroups = competences;
+            newScheduleGroup.Description = scheduleGroup.Description;
+            newScheduleGroup.Id = Guid.NewGuid();
+            newScheduleGroup.IgNorInCalculations = scheduleGroup.IgnoreInCalculations;
 
-            _context.ScheduleGroup.Add(scheduleGroup);
+            _context.ScheduleGroup.Add(newScheduleGroup);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetScheduleGroup", new { id = scheduleGroup.Id }, scheduleGroup);
+            return CreatedAtAction("GetScheduleGroup", new { id = newScheduleGroup.Id }, newScheduleGroup);
         }
 
         // DELETE: api/ScheduleGroup/5

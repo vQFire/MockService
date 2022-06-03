@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MockService.Data;
+using MockService.Dtos;
 using MockService.Models;
 
 namespace MockService.Controllers
@@ -80,23 +81,32 @@ namespace MockService.Controllers
         // POST: api/GroupSchedule
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<ScheduleGroupSchedule>> PostScheduleGroupSchedule(ScheduleGroupSchedule scheduleGroupSchedule)
+        public async Task<ActionResult<ScheduleGroupSchedule>> PostScheduleGroupSchedule(CreateGroupScheduleDTO scheduleGroupSchedule)
         {
-            scheduleGroupSchedule.Id = Guid.NewGuid();
-
-            ScheduleGroup scheduleGroup = await _context.ScheduleGroup.FindAsync(scheduleGroupSchedule.ScheduleGroup.Id);
+            var id = Guid.NewGuid();
+            var scheduleGroup = await _context.ScheduleGroup
+                .Include(c => c.OrganizationalUnits).ThenInclude(c => c.OrganizationalUnit)
+                .Include(c => c.CompetenceScheduleGroups).ThenInclude(c => c.Competence)
+                .FirstOrDefaultAsync(c => c.Id == scheduleGroupSchedule.ScheduleGroupId);
 
             if (scheduleGroup == null)
             {
                 return NotFound("ScheduleGroup not Found");
             }
 
-            scheduleGroupSchedule.ScheduleGroup = scheduleGroup;
+            var newScheduleGroupSchedule = new ScheduleGroupSchedule
+            {
+                Id = id,
+                ScheduleGroup = scheduleGroup,
+                ScheduleType = scheduleGroupSchedule.ScheduleType,
+                Start = scheduleGroupSchedule.StartDate,
+                End = scheduleGroupSchedule.EndDate,
+            };
             
-            _context.ScheduleGroupSchedule.Add(scheduleGroupSchedule);
+            _context.ScheduleGroupSchedule.Add(newScheduleGroupSchedule);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetScheduleGroupSchedule", new { id = scheduleGroupSchedule.Id }, scheduleGroupSchedule);
+            return CreatedAtAction("GetScheduleGroupSchedule", new { id = newScheduleGroupSchedule.Id }, newScheduleGroupSchedule);
         }
 
         // DELETE: api/GroupSchedule/5

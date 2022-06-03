@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MockService.Data;
+using MockService.Dtos;
 using MockService.Models;
 
 namespace MockService.Controllers
@@ -74,14 +75,21 @@ namespace MockService.Controllers
         // POST: api/Employee
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Employee>> PostEmployee(Employee employee)
+        public async Task<ActionResult<Employee>> PostEmployee(CreateEmployeeDTO employee)
         {
-            employee.Id = Guid.NewGuid();
+            var newEmployee = new Employee
+            {
+                Id = Guid.NewGuid(),
+                Initials = employee.Initials,
+                FirstName = employee.FirstName,
+                Name = employee.Name,
+                DateOfBirth = employee.DateOfBirth,
+            };
             
-            _context.Employees.Add(employee);
+            _context.Employees.Add(newEmployee);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetEmployee", new { id = employee.Id }, employee);
+            return CreatedAtAction("GetEmployee", new { id = newEmployee.Id }, newEmployee);
         }
 
         // DELETE: api/Employee/5

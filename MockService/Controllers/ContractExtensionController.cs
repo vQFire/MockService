@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MockService.Data;
+using MockService.Dtos;
 using MockService.Models;
 
 namespace MockService.Controllers
@@ -106,14 +107,14 @@ namespace MockService.Controllers
         // POST: api/ContractExtension
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<EmployeeContractExtension>> PostEmployeeContractExtension(EmployeeContractExtension employeeContractExtension)
+        public async Task<ActionResult<EmployeeContractExtension>> PostEmployeeContractExtension(EmployeeContractExtensionDTO employeeContractExtension)
         {
-            employeeContractExtension.Id = Guid.NewGuid();
+            var id = Guid.NewGuid();
             
             EmployeeContract contract =
-                await _context.EmployeeContracts.FindAsync(employeeContractExtension.EmployeeContract.Id);
+                await _context.EmployeeContracts.FindAsync(employeeContractExtension.EmployeeContractID);
             OrganizationalUnit unit =
-                await _context.OrganizationalUnits.FindAsync(employeeContractExtension.OrganizationalUnit.Id);
+                await _context.OrganizationalUnits.FindAsync(employeeContractExtension.OrganizationalUnitID);
 
             if (contract == null)
             {
@@ -125,14 +126,23 @@ namespace MockService.Controllers
                 return NotFound("Unit not Found");
             }
             
-            employeeContractExtension.EmployeeContract = contract;
-            employeeContractExtension.OrganizationalUnit = unit;
+            var newContractExtension = new EmployeeContractExtension
+            {
+                Id = id,
+                EmployeeContract = contract,
+                OrganizationalUnit = unit,
+                Function = employeeContractExtension.Function,
+                LaborMinutesPerWeekMin = employeeContractExtension.LaborMinutesPerWeekMin,
+                LaborMinutesPerWeekMax = employeeContractExtension.LaborMinutesPerWeekMax,
+                validFrom = employeeContractExtension.ValidFrom,
+                validTo = employeeContractExtension.ValidTo
+            };
             
             
-            _context.EmployeeContractExtensions.Add(employeeContractExtension);
+            _context.EmployeeContractExtensions.Add(newContractExtension);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetEmployeeContractExtension", new { id = employeeContractExtension.Id }, employeeContractExtension);
+            return CreatedAtAction("GetEmployeeContractExtension", new { id = newContractExtension.Id }, newContractExtension);
         }
 
         // DELETE: api/ContractExtension/5

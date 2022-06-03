@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MockService.Data;
+using MockService.Dtos;
 using MockService.Models;
 
 namespace MockService.Controllers
@@ -82,22 +83,29 @@ namespace MockService.Controllers
         // POST: api/Contract
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<EmployeeContract>> PostEmployeeContract(EmployeeContract employeeContract)
+        public async Task<ActionResult<EmployeeContract>> PostEmployeeContract(CreateEmployeeContractDTO employeeContract)
         {
-            employeeContract.Id = Guid.NewGuid();
+            var id = Guid.NewGuid();
             
-            Employee employee = await _context.Employees.FindAsync(employeeContract.Employee.Id);
+            Employee employee = await _context.Employees.FindAsync(employeeContract.EmployeeId);
             if (employee == null)
             {
                 return NotFound("Employee not Found");
             }
-
-            employeeContract.Employee = employee;
+            var newEmployeeContract = new EmployeeContract
+            {
+                Id = id,
+                Employee = employee,
+                ScheduleCompetence = employeeContract.ScheduleCompetence,
+                TrialPeriodEnd = employeeContract.TrialPeriodEnd,
+                ValidFrom = employeeContract.ValidFrom,
+                ValidTo = employeeContract.ValidTo
+            };
             
-            _context.EmployeeContracts.Add(employeeContract);
+            _context.EmployeeContracts.Add(newEmployeeContract);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetEmployeeContract", new { id = employeeContract.Id }, employeeContract);
+            return CreatedAtAction("GetEmployeeContract", new { id = newEmployeeContract.Id }, newEmployeeContract);
         }
 
         // DELETE: api/Contract/5

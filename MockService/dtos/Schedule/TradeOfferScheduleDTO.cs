@@ -1,6 +1,7 @@
 namespace MockService.Dtos;
 
-public class ScheduleDTO {
+public class TradeOfferScheduleDTO 
+{
     public Guid Id { get; set; }
     public DateTime Date { get; set; }
     public DateTime Start { get; set; }
