@@ -76,6 +76,16 @@ namespace MockService.Controllers
                 .ToListAsync();
         }
 
+        [HttpGet("employee/{id}")]
+        public async Task<ActionResult<IEnumerable<EmployeeContractExtension>>> GetEmployeeContractExtensionsByEmployee(Guid id)
+        {
+            return await _context.EmployeeContractExtensions
+                .Include(c => c.OrganizationalUnit)
+                .Include(c => c.EmployeeContract.Employee)
+                .Where(c => c.EmployeeContract.Employee.Id == id)
+                .ToListAsync();
+        }
+
         // PUT: api/ContractExtension/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]

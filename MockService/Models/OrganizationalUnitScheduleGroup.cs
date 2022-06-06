@@ -11,4 +11,5 @@ public class OrganizationalUnitScheduleGroup
 
     public Guid Id { get; set; }
     public OrganizationalUnit OrganizationalUnit { get; set; }
+    public Guid OrganizationalUnitId { get; set; }
 }
