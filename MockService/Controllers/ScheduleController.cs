@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MockService.Data;
+using MockService.Dtos;
 using MockService.Models;
 
 namespace MockService.Controllers
@@ -26,7 +27,7 @@ namespace MockService.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Schedule>>> GetSchedules()
         {
-            return await _context.Schedule.ToListAsync();
+            return await _context.Schedule.Include(c => c.ScheduleGroup.CompetenceScheduleGroups).ThenInclude(c => c.Competence).Include(c => c.EmployeeContract.Employee).ToListAsync();
         }
 
         // GET: api/Schedule/5
@@ -34,7 +35,9 @@ namespace MockService.Controllers
         public async Task<ActionResult<Schedule>> GetSchedule(Guid id)
         {
             var schedule = await _context.Schedule
-                .Include(c => c.EmployeeContract)
+                .Include(c => c.EmployeeContract.Employee)
+                .Include(c => c.ScheduleGroup.CompetenceScheduleGroups)
+                .ThenInclude(c => c.Competence)
                 .FirstOrDefaultAsync(c => c.Id == id);
 
             if (schedule == null)
@@ -45,14 +48,27 @@ namespace MockService.Controllers
             return schedule;
         }
         // GET: api/Schedule/ids
-        // BODY: {"ids": [id1, id2, ...]}
-        [HttpGet("ids")]
-        public async Task<ActionResult<IEnumerable<Schedule>>> GetScheduleByIds([FromBody]IEnumerable<Guid> scheduleIds)
+        // BODY: {"scheduleIds": [id1, id2, ...]}
+        [HttpPost("ids")]
+        public async Task<ActionResult<IEnumerable<TradeOfferScheduleDTO>>> GetScheduleByIds([FromBody]IEnumerable<Guid> scheduleIds)
         {
-            return await _context.Schedule
-                .Include(c => c.EmployeeContract)
-                .Where(c => scheduleIds.Contains(c.Id))
-                .ToListAsync();
+            var schedules = await _context.Schedule
+                .Include(c => c.EmployeeContract.Employee)
+                .Include(c => c.ScheduleGroup.CompetenceScheduleGroups)
+                .ThenInclude(c => c.Competence)
+                .Where(c => scheduleIds.Contains(c.Id)).ToListAsync();
+
+            var scheduleDtos = schedules.Select(c => new TradeOfferScheduleDTO
+            {
+                Id = c.Id,
+                Date = c.Date,
+                Start = c.Start,
+                End = c.End,
+                Competences = c.ScheduleGroup.CompetenceScheduleGroups.Select(d => d.Competence.Id),
+                EmployeeName = $"{c.EmployeeContract.Employee.FirstName} {c.EmployeeContract.Employee.Name}"
+            });
+
+            return new ActionResult<IEnumerable<TradeOfferScheduleDTO>>(scheduleDtos);
         }
         
         [HttpGet("employee/{id}")]
@@ -158,12 +174,33 @@ namespace MockService.Controllers
         // POST: api/Schedule
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Schedule>> PostSchedule(Schedule schedule)
+        public async Task<ActionResult<Schedule>> PostSchedule(CreateScheduleDTO schedule)
         {
-            schedule.Id = Guid.NewGuid();
+            // schedule.Id = Guid.NewGuid();
 
-            EmployeeContract contract = await _context.EmployeeContracts.FindAsync(schedule.EmployeeContract.Id);
-            ScheduleGroup scheduleGroup = await _context.ScheduleGroup.FindAsync(schedule.ScheduleGroup.Id);
+            // EmployeeContract contract = await _context.EmployeeContracts.FindAsync(schedule.EmployeeContract.Id);
+            // ScheduleGroup scheduleGroup = await _context.ScheduleGroup.FindAsync(schedule.ScheduleGroup.Id);
+
+            // if (contract == null)
+            // {
+            //     return NotFound("Contract not Found");
+            // }
+
+            // if (scheduleGroup == null)
+            // {
+            //     return NotFound("ScheduleGroup not Found");
+            // }
+
+            // schedule.EmployeeContract = contract;
+            // schedule.ScheduleGroup = scheduleGroup;
+
+            // _context.Schedule.Add(schedule);
+            // await _context.SaveChangesAsync();
+
+            // return CreatedAtAction("GetSchedule", new { id = schedule.Id }, schedule);
+
+            EmployeeContract contract = await _context.EmployeeContracts.FindAsync(schedule.EmployeeContractId);
+            ScheduleGroup scheduleGroup = await _context.ScheduleGroup.FindAsync(schedule.ScheduleGroupId);
 
             if (contract == null)
             {
@@ -175,13 +212,19 @@ namespace MockService.Controllers
                 return NotFound("ScheduleGroup not Found");
             }
 
-            schedule.EmployeeContract = contract;
-            schedule.ScheduleGroup = scheduleGroup;
+            Schedule newSchedule = new Schedule
+            {
+                Id = Guid.NewGuid(),
+                EmployeeContract = contract,
+                ScheduleGroup = scheduleGroup,
+                Start = schedule.Start,
+                End = schedule.End
+            };
 
-            _context.Schedule.Add(schedule);
+            await _context.Schedule.AddAsync(newSchedule);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetSchedule", new { id = schedule.Id }, schedule);
+            return CreatedAtAction("GetSchedule", new { id = newSchedule.Id }, newSchedule);
         }
 
         // DELETE: api/Schedule/5
@@ -189,6 +232,7 @@ namespace MockService.Controllers
         public async Task<IActionResult> DeleteSchedule(Guid id)
         {
             var schedule = await _context.Schedule.FindAsync(id);
+
             if (schedule == null)
             {
                 return NotFound();
