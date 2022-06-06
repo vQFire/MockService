@@ -140,7 +140,7 @@ namespace MockService.Controllers
             newScheduleGroup.CompetenceScheduleGroups = competences;
             newScheduleGroup.Description = scheduleGroup.Description;
             newScheduleGroup.Id = Guid.NewGuid();
-            newScheduleGroup.IgNorInCalculations = scheduleGroup.IgnoreInCalculations;
+            newScheduleGroup.IgnoreInCalculations = scheduleGroup.IgnoreInCalculations;
 
             _context.ScheduleGroup.Add(newScheduleGroup);
             await _context.SaveChangesAsync();
