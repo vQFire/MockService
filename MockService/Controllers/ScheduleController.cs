@@ -27,11 +27,7 @@ namespace MockService.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Schedule>>> GetSchedules()
         {
-            return await _context.Schedule
-                .Include(c => c.EmployeeContract.Employee)
-                .Include(c => c.ScheduleGroup.Competences)
-                .Include(c => c.ScheduleGroup.OrganizationalUnits)
-                .ToListAsync();
+            return await _context.Schedule.Include(c => c.ScheduleGroup.CompetenceScheduleGroups).ThenInclude(c => c.Competence).Include(c => c.EmployeeContract.Employee).ToListAsync();
         }
 
         // GET: api/Schedule/5
@@ -40,8 +36,8 @@ namespace MockService.Controllers
         {
             var schedule = await _context.Schedule
                 .Include(c => c.EmployeeContract.Employee)
-                .Include(c => c.ScheduleGroup.Competences)
-                .Include(c => c.ScheduleGroup.OrganizationalUnits)
+                .Include(c => c.ScheduleGroup.CompetenceScheduleGroups)
+                .ThenInclude(c => c.Competence)
                 .FirstOrDefaultAsync(c => c.Id == id);
 
             if (schedule == null)
@@ -58,8 +54,8 @@ namespace MockService.Controllers
         {
             var schedules = await _context.Schedule
                 .Include(c => c.EmployeeContract.Employee)
-                .Include(c => c.ScheduleGroup.Competences)
-                .Include(c => c.ScheduleGroup.OrganizationalUnits)
+                .Include(c => c.ScheduleGroup.CompetenceScheduleGroups)
+                .ThenInclude(c => c.Competence)
                 .Where(c => scheduleIds.Contains(c.Id)).ToListAsync();
 
             var scheduleDtos = schedules.Select(c => new TradeOfferScheduleDTO
@@ -68,7 +64,7 @@ namespace MockService.Controllers
                 Date = c.Date,
                 Start = c.Start,
                 End = c.End,
-                Competences = c.ScheduleGroup.Competences.Select(d => d.Id),
+                Competences = c.ScheduleGroup.CompetenceScheduleGroups.Select(d => d.Competence.Id),
                 EmployeeName = $"{c.EmployeeContract.Employee.FirstName} {c.EmployeeContract.Employee.Name}"
             });
 
@@ -79,9 +75,8 @@ namespace MockService.Controllers
         public async Task<ActionResult<IEnumerable<Schedule>>> GetSchedulesByEmployee(Guid id)
         {
             return await _context.Schedule
-                .Include(c => c.EmployeeContract.Employee)
-                .Include(c => c.ScheduleGroup.Competences)
-                .Include(c => c.ScheduleGroup.OrganizationalUnits)
+                .Include(c => c.EmployeeContract)
+                .Include(c => c.ScheduleGroup.CompetenceScheduleGroups).ThenInclude(c => c.Competence)
                 .Where(c => c.EmployeeContract.Id == id)
                 .ToListAsync();
         }
@@ -90,9 +85,8 @@ namespace MockService.Controllers
         public async Task<ActionResult<IEnumerable<Schedule>>> GetFutureSchedulesByEmployee(Guid id)
         {
             return await _context.Schedule
-                .Include(c => c.EmployeeContract.Employee)
-                .Include(c => c.ScheduleGroup.Competences)
-                .Include(c => c.ScheduleGroup.OrganizationalUnits)
+                .Include(c => c.EmployeeContract)
+                .Include(c => c.ScheduleGroup.CompetenceScheduleGroups).ThenInclude(c => c.Competence)
                 .Where(c => c.EmployeeContract.Id == id && c.Start.ToUniversalTime().CompareTo(DateTime.Now.ToUniversalTime()) > 0 )
                 .ToListAsync();
         }
@@ -101,9 +95,8 @@ namespace MockService.Controllers
         public async Task<ActionResult<IEnumerable<Schedule>>> GetTodaysScheduleByEmployee(Guid id)
         {
             return await _context.Schedule
-                .Include(c => c.EmployeeContract.Employee)
-                .Include(c => c.ScheduleGroup.Competences)
-                .Include(c => c.ScheduleGroup.OrganizationalUnits)
+                .Include(c => c.EmployeeContract)
+                .Include(c => c.ScheduleGroup.CompetenceScheduleGroups).ThenInclude(c => c.Competence)
                 .Where(c => c.EmployeeContract.Employee.Id == id && c.Start.ToUniversalTime().Date == DateTime.Now.Date)
                 .ToListAsync();
         }
@@ -112,9 +105,8 @@ namespace MockService.Controllers
         public async Task<ActionResult<IEnumerable<Schedule>>> GetScheduleByEmployeeAndDay(Guid id, DateTime date)
         {
             return await _context.Schedule
-                .Include(c => c.EmployeeContract.Employee)
-                .Include(c => c.ScheduleGroup.Competences)
-                .Include(c => c.ScheduleGroup.OrganizationalUnits)
+                .Include(c => c.EmployeeContract)
+                .Include(c => c.ScheduleGroup.CompetenceScheduleGroups).ThenInclude(c => c.Competence)
                 .Where(c => c.EmployeeContract.Employee.Id == id && c.Start.ToUniversalTime().Date == date.ToUniversalTime().Date)
                 .ToListAsync();
         }
@@ -123,9 +115,8 @@ namespace MockService.Controllers
         public async Task<ActionResult<IEnumerable<Schedule>>> GetSchedulesByContract(Guid id)
         {
             return await _context.Schedule
-                .Include(c => c.EmployeeContract.Employee)
-                .Include(c => c.ScheduleGroup.Competences)
-                .Include(c => c.ScheduleGroup.OrganizationalUnits)
+                .Include(c => c.EmployeeContract)
+                .Include(c => c.ScheduleGroup.CompetenceScheduleGroups).ThenInclude(c => c.Competence)
                 .Where(c => c.EmployeeContract.Id == id)
                 .ToListAsync();
         }
@@ -134,9 +125,8 @@ namespace MockService.Controllers
         public async Task<ActionResult<IEnumerable<Schedule>>> GetFutureSchedulesByContract(Guid id)
         {
             return await _context.Schedule
-                .Include(c => c.EmployeeContract.Employee)
-                .Include(c => c.ScheduleGroup.Competences)
-                .Include(c => c.ScheduleGroup.OrganizationalUnits)
+                .Include(c => c.EmployeeContract)
+                .Include(c => c.ScheduleGroup.CompetenceScheduleGroups).ThenInclude(c => c.Competence)
                 .Where(c => c.EmployeeContract.Id == id && c.Start.ToUniversalTime().CompareTo(DateTime.Now.ToUniversalTime()) > 0 )
                 .ToListAsync();
         }
@@ -145,9 +135,8 @@ namespace MockService.Controllers
         public async Task<ActionResult<IEnumerable<Schedule>>> GetTodaysScheduleByContract(Guid id)
         {
             return await _context.Schedule
-                .Include(c => c.EmployeeContract.Employee)
-                .Include(c => c.ScheduleGroup.Competences)
-                .Include(c => c.ScheduleGroup.OrganizationalUnits)
+                .Include(c => c.EmployeeContract)
+                .Include(c => c.ScheduleGroup.CompetenceScheduleGroups).ThenInclude(c => c.Competence)
                 .Where(c => c.EmployeeContract.Id == id && c.Start.ToUniversalTime().Date == DateTime.Now.Date)
                 .ToListAsync();
         }
@@ -156,9 +145,8 @@ namespace MockService.Controllers
         public async Task<ActionResult<IEnumerable<Schedule>>> GetScheduleByContractAndDay(Guid id, DateTime date)
         {
             return await _context.Schedule
-                .Include(c => c.EmployeeContract.Employee)
-                .Include(c => c.ScheduleGroup.Competences)
-                .Include(c => c.ScheduleGroup.OrganizationalUnits)
+                .Include(c => c.EmployeeContract)
+                .Include(c => c.ScheduleGroup.CompetenceScheduleGroups).ThenInclude(c => c.Competence)
                 .Where(c => c.EmployeeContract.Id == id && c.Start.ToUniversalTime().Date == date.ToUniversalTime().Date)
                 .ToListAsync();
         }

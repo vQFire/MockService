@@ -36,12 +36,7 @@ namespace MockService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("ScheduleGroupId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("ScheduleGroupId");
 
                     b.ToTable("Competences");
                 });
@@ -55,9 +50,14 @@ namespace MockService.Migrations
                     b.Property<Guid>("CompetenceId")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid?>("ScheduleGroupId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CompetenceId");
+
+                    b.HasIndex("ScheduleGroupId");
 
                     b.ToTable("CompetenceScheduleGroups");
                 });
@@ -197,12 +197,7 @@ namespace MockService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("ScheduleGroupId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("ScheduleGroupId");
 
                     b.ToTable("OrganizationalUnits");
                 });
@@ -216,9 +211,14 @@ namespace MockService.Migrations
                     b.Property<Guid>("OrganizationalUnitId")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid?>("ScheduleGroupId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
 
                     b.HasIndex("OrganizationalUnitId");
+
+                    b.HasIndex("ScheduleGroupId");
 
                     b.ToTable("OrganizationalUnitScheduleGroups");
                 });
@@ -270,7 +270,6 @@ namespace MockService.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("IgnoreInCalculations")
@@ -309,13 +308,6 @@ namespace MockService.Migrations
                     b.ToTable("ScheduleGroupSchedule");
                 });
 
-            modelBuilder.Entity("MockService.Models.Competence", b =>
-                {
-                    b.HasOne("MockService.Models.ScheduleGroup", null)
-                        .WithMany("Competences")
-                        .HasForeignKey("ScheduleGroupId");
-                });
-
             modelBuilder.Entity("MockService.Models.CompetenceScheduleGroup", b =>
                 {
                     b.HasOne("MockService.Models.Competence", "Competence")
@@ -323,6 +315,10 @@ namespace MockService.Migrations
                         .HasForeignKey("CompetenceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("MockService.Models.ScheduleGroup", null)
+                        .WithMany("CompetenceScheduleGroups")
+                        .HasForeignKey("ScheduleGroupId");
 
                     b.Navigation("Competence");
                 });
@@ -376,13 +372,6 @@ namespace MockService.Migrations
                     b.Navigation("OrganizationalUnit");
                 });
 
-            modelBuilder.Entity("MockService.Models.OrganizationalUnit", b =>
-                {
-                    b.HasOne("MockService.Models.ScheduleGroup", null)
-                        .WithMany("OrganizationalUnits")
-                        .HasForeignKey("ScheduleGroupId");
-                });
-
             modelBuilder.Entity("MockService.Models.OrganizationalUnitScheduleGroup", b =>
                 {
                     b.HasOne("MockService.Models.OrganizationalUnit", "OrganizationalUnit")
@@ -390,6 +379,10 @@ namespace MockService.Migrations
                         .HasForeignKey("OrganizationalUnitId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("MockService.Models.ScheduleGroup", null)
+                        .WithMany("OrganizationalUnits")
+                        .HasForeignKey("ScheduleGroupId");
 
                     b.Navigation("OrganizationalUnit");
                 });
@@ -426,7 +419,7 @@ namespace MockService.Migrations
 
             modelBuilder.Entity("MockService.Models.ScheduleGroup", b =>
                 {
-                    b.Navigation("Competences");
+                    b.Navigation("CompetenceScheduleGroups");
 
                     b.Navigation("OrganizationalUnits");
                 });
