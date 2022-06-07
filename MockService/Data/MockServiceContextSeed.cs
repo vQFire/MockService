@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
 using MockService.Models;
 
 namespace MockService.Data;
@@ -227,32 +228,37 @@ public static class MockServiceContextSeed
 
     private static async Task LinkScheduleGroupToCompetenceScheduleGroup(MockServiceContext context)
     {
+        IEnumerable<Competence> competences = await context.Competences.ToListAsync();
+
         // Add Ig3 competence to OD1
         var scheduleGroupOd1 = await context.ScheduleGroup.FindAsync(Guid.Parse("ec1542e0-a2c9-43d0-ab31-357cc8fd6adb"));
-        var competenceScheduleGroupIg3 = await context.CompetenceScheduleGroups.FindAsync(Guid.Parse("ec17b921-bfd1-4382-a81b-c69c775409ec"));
-        scheduleGroupOd1!.CompetenceScheduleGroups = new List<CompetenceScheduleGroup>();
-        scheduleGroupOd1.CompetenceScheduleGroups.Add(competenceScheduleGroupIg3!);
+        scheduleGroupOd1!.Competences = new List<Competence>();
+        scheduleGroupOd1.Competences.Add(competences.ElementAt(0));
+        scheduleGroupOd1.Competences.Add(competences.ElementAt(1));
         // Add Niv1 competence to MD1
         var scheduleGroupMd1 = await context.ScheduleGroup.FindAsync(Guid.Parse("3e7f7adb-fc4e-43c8-9600-276434af27c6"));
-        var competenceScheduleGroupNiv1 = await context.CompetenceScheduleGroups.FindAsync(Guid.Parse("e196df00-4565-4a29-a218-d329ae6e9bcd"));
-        scheduleGroupMd1!.CompetenceScheduleGroups = new List<CompetenceScheduleGroup>();
-        scheduleGroupMd1.CompetenceScheduleGroups.Add(competenceScheduleGroupNiv1!);
+        scheduleGroupMd1!.Competences = new List<Competence>();
+        scheduleGroupMd1.Competences.Add(competences.ElementAt(0));
+        scheduleGroupMd1.Competences.Add(competences.ElementAt(1));
         
         await context.SaveChangesAsync();
     }
 
     private static async Task LinkOrganizationalUnitScheduleGroup(MockServiceContext context)
     {
+        IEnumerable<OrganizationalUnit> units = await context.OrganizationalUnits.ToListAsync();
+
         // Add OD1 schedule group to VVLEINO
         var scheduleGroupOd1 = await context.ScheduleGroup.FindAsync(Guid.Parse("ec1542e0-a2c9-43d0-ab31-357cc8fd6adb"));
-        var organizationalUnitScheduleGroupVvleino = await context.OrganizationalUnitScheduleGroups.FindAsync(Guid.Parse("4db34c1c-5654-48fa-b1cd-a4a29e007e75"));
-        scheduleGroupOd1!.OrganizationalUnits = new List<OrganizationalUnitScheduleGroup>();
-        scheduleGroupOd1.OrganizationalUnits.Add(organizationalUnitScheduleGroupVvleino!);
+        scheduleGroupOd1!.OrganizationalUnits = new List<OrganizationalUnit>();
+        scheduleGroupOd1.OrganizationalUnits.Add(units.ElementAt(0));
+        scheduleGroupOd1.OrganizationalUnits.Add(units.ElementAt(1));
         // Add MD1 schedule group to LAB Oost
         var scheduleGroupMd1 = await context.ScheduleGroup.FindAsync(Guid.Parse("3e7f7adb-fc4e-43c8-9600-276434af27c6"));
         var organizationalUnitScheduleGroupLabOost = await context.OrganizationalUnitScheduleGroups.FindAsync(Guid.Parse("ac7e15ed-a1b7-456a-b323-9a842eff2ef8"));
-        scheduleGroupMd1!.OrganizationalUnits = new List<OrganizationalUnitScheduleGroup>();
-        scheduleGroupMd1.OrganizationalUnits.Add(organizationalUnitScheduleGroupLabOost!);
+        scheduleGroupMd1!.OrganizationalUnits = new List<OrganizationalUnit>();
+        scheduleGroupMd1.OrganizationalUnits.Add(units.ElementAt(0));
+        scheduleGroupMd1.OrganizationalUnits.Add(units.ElementAt(1));
         
         await context.SaveChangesAsync();
     }

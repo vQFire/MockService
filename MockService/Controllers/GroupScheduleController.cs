@@ -28,8 +28,8 @@ namespace MockService.Controllers
         public async Task<ActionResult<IEnumerable<ScheduleGroupSchedule>>> GetScheduleGroupSchedule()
         {
             return await _context.ScheduleGroupSchedule
-                .Include(c => c.ScheduleGroup.OrganizationalUnits).ThenInclude(c => c.OrganizationalUnit)
-                .Include(c => c.ScheduleGroup.CompetenceScheduleGroups).ThenInclude(c => c.Competence)
+                .Include(c => c.ScheduleGroup.OrganizationalUnits)
+                .Include(c => c.ScheduleGroup.Competences)
                 .ToListAsync();
         }
 
@@ -38,8 +38,8 @@ namespace MockService.Controllers
         public async Task<ActionResult<ScheduleGroupSchedule>> GetScheduleGroupSchedule(Guid id)
         {
             var scheduleGroupSchedule = await _context.ScheduleGroupSchedule
-                .Include(c => c.ScheduleGroup.OrganizationalUnits).ThenInclude(c => c.OrganizationalUnit)
-                .Include(c => c.ScheduleGroup.CompetenceScheduleGroups).ThenInclude(c => c.Competence)
+                .Include(c => c.ScheduleGroup.OrganizationalUnits)
+                .Include(c => c.ScheduleGroup.Competences)
                 .FirstOrDefaultAsync(c => c.Id == id);
 
             if (scheduleGroupSchedule == null)
@@ -85,8 +85,8 @@ namespace MockService.Controllers
         {
             var id = Guid.NewGuid();
             var scheduleGroup = await _context.ScheduleGroup
-                .Include(c => c.OrganizationalUnits).ThenInclude(c => c.OrganizationalUnit)
-                .Include(c => c.CompetenceScheduleGroups).ThenInclude(c => c.Competence)
+                .Include(c => c.OrganizationalUnits)
+                .Include(c => c.Competences)
                 .FirstOrDefaultAsync(c => c.Id == scheduleGroupSchedule.ScheduleGroupId);
 
             if (scheduleGroup == null)
