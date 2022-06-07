@@ -146,9 +146,20 @@ namespace MockService.Controllers
         // PUT: api/Schedule/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSchedule(Guid id, Schedule schedule)
+        public async Task<IActionResult> PutSchedule(Guid id, CreateScheduleDTO scheduleDto)
         {
-            schedule.Id = id;
+            var schedule = await _context.Schedule.FindAsync(id);
+            if (schedule == null)
+            {
+                return NotFound();
+            }
+            schedule.EmployeeContractId = scheduleDto.EmployeeContractId;
+            schedule.ScheduleGroupId = scheduleDto.ScheduleGroupId;
+            schedule.ScheduleType = scheduleDto.ScheduleType;
+            schedule.Date = scheduleDto.Date;
+            schedule.Start = scheduleDto.Start;
+            schedule.End = scheduleDto.End;
+            schedule.HasChanged = true;
 
             _context.Entry(schedule).State = EntityState.Modified;
 
@@ -162,13 +173,10 @@ namespace MockService.Controllers
                 {
                     return NotFound();
                 }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
 
-            return NoContent();
+            return Ok();
         }
 
         // POST: api/Schedule
@@ -176,29 +184,6 @@ namespace MockService.Controllers
         [HttpPost]
         public async Task<ActionResult<Schedule>> PostSchedule(CreateScheduleDTO schedule)
         {
-            // schedule.Id = Guid.NewGuid();
-
-            // EmployeeContract contract = await _context.EmployeeContracts.FindAsync(schedule.EmployeeContract.Id);
-            // ScheduleGroup scheduleGroup = await _context.ScheduleGroup.FindAsync(schedule.ScheduleGroup.Id);
-
-            // if (contract == null)
-            // {
-            //     return NotFound("Contract not Found");
-            // }
-
-            // if (scheduleGroup == null)
-            // {
-            //     return NotFound("ScheduleGroup not Found");
-            // }
-
-            // schedule.EmployeeContract = contract;
-            // schedule.ScheduleGroup = scheduleGroup;
-
-            // _context.Schedule.Add(schedule);
-            // await _context.SaveChangesAsync();
-
-            // return CreatedAtAction("GetSchedule", new { id = schedule.Id }, schedule);
-
             EmployeeContract contract = await _context.EmployeeContracts.FindAsync(schedule.EmployeeContractId);
             ScheduleGroup scheduleGroup = await _context.ScheduleGroup.FindAsync(schedule.ScheduleGroupId);
 
