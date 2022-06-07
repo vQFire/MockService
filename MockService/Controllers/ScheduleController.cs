@@ -76,6 +76,7 @@ namespace MockService.Controllers
         {
             return await _context.Schedule
                 .Include(c => c.EmployeeContract)
+                .Include(c => c.ScheduleGroup.CompetenceScheduleGroups).ThenInclude(c => c.Competence)
                 .Where(c => c.EmployeeContract.Id == id)
                 .ToListAsync();
         }
@@ -85,6 +86,7 @@ namespace MockService.Controllers
         {
             return await _context.Schedule
                 .Include(c => c.EmployeeContract)
+                .Include(c => c.ScheduleGroup.CompetenceScheduleGroups).ThenInclude(c => c.Competence)
                 .Where(c => c.EmployeeContract.Id == id && c.Start.ToUniversalTime().CompareTo(DateTime.Now.ToUniversalTime()) > 0 )
                 .ToListAsync();
         }
@@ -94,6 +96,7 @@ namespace MockService.Controllers
         {
             return await _context.Schedule
                 .Include(c => c.EmployeeContract)
+                .Include(c => c.ScheduleGroup.CompetenceScheduleGroups).ThenInclude(c => c.Competence)
                 .Where(c => c.EmployeeContract.Employee.Id == id && c.Start.ToUniversalTime().Date == DateTime.Now.Date)
                 .ToListAsync();
         }
@@ -103,6 +106,7 @@ namespace MockService.Controllers
         {
             return await _context.Schedule
                 .Include(c => c.EmployeeContract)
+                .Include(c => c.ScheduleGroup.CompetenceScheduleGroups).ThenInclude(c => c.Competence)
                 .Where(c => c.EmployeeContract.Employee.Id == id && c.Start.ToUniversalTime().Date == date.ToUniversalTime().Date)
                 .ToListAsync();
         }
@@ -112,6 +116,7 @@ namespace MockService.Controllers
         {
             return await _context.Schedule
                 .Include(c => c.EmployeeContract)
+                .Include(c => c.ScheduleGroup.CompetenceScheduleGroups).ThenInclude(c => c.Competence)
                 .Where(c => c.EmployeeContract.Id == id)
                 .ToListAsync();
         }
@@ -121,6 +126,7 @@ namespace MockService.Controllers
         {
             return await _context.Schedule
                 .Include(c => c.EmployeeContract)
+                .Include(c => c.ScheduleGroup.CompetenceScheduleGroups).ThenInclude(c => c.Competence)
                 .Where(c => c.EmployeeContract.Id == id && c.Start.ToUniversalTime().CompareTo(DateTime.Now.ToUniversalTime()) > 0 )
                 .ToListAsync();
         }
@@ -130,6 +136,7 @@ namespace MockService.Controllers
         {
             return await _context.Schedule
                 .Include(c => c.EmployeeContract)
+                .Include(c => c.ScheduleGroup.CompetenceScheduleGroups).ThenInclude(c => c.Competence)
                 .Where(c => c.EmployeeContract.Id == id && c.Start.ToUniversalTime().Date == DateTime.Now.Date)
                 .ToListAsync();
         }
@@ -139,6 +146,7 @@ namespace MockService.Controllers
         {
             return await _context.Schedule
                 .Include(c => c.EmployeeContract)
+                .Include(c => c.ScheduleGroup.CompetenceScheduleGroups).ThenInclude(c => c.Competence)
                 .Where(c => c.EmployeeContract.Id == id && c.Start.ToUniversalTime().Date == date.ToUniversalTime().Date)
                 .ToListAsync();
         }
