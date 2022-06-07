@@ -43,6 +43,12 @@ namespace MockService.Controllers
             return organizationalUnit;
         }
 
+        [HttpPost("ids")]
+        public async Task<ActionResult<IEnumerable<OrganizationalUnit>>> GetOrganizationalUnitsByIds([FromBody] IEnumerable<Guid> ids)
+        {
+            return await _context.OrganizationalUnits.Where(c => ids.Contains(c.Id)).ToListAsync();
+        }
+
         // PUT: api/OrganizationalUnit/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
