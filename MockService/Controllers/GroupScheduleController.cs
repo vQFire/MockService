@@ -28,8 +28,6 @@ namespace MockService.Controllers
         public async Task<ActionResult<IEnumerable<ScheduleGroupSchedule>>> GetScheduleGroupSchedule()
         {
             return await _context.ScheduleGroupSchedule
-                .Include(c => c.ScheduleGroup.OrganizationalUnits).ThenInclude(c => c.OrganizationalUnit)
-                .Include(c => c.ScheduleGroup.CompetenceScheduleGroups).ThenInclude(c => c.Competence)
                 .ToListAsync();
         }
 
@@ -38,8 +36,6 @@ namespace MockService.Controllers
         public async Task<ActionResult<ScheduleGroupSchedule>> GetScheduleGroupSchedule(Guid id)
         {
             var scheduleGroupSchedule = await _context.ScheduleGroupSchedule
-                .Include(c => c.ScheduleGroup.OrganizationalUnits).ThenInclude(c => c.OrganizationalUnit)
-                .Include(c => c.ScheduleGroup.CompetenceScheduleGroups).ThenInclude(c => c.Competence)
                 .FirstOrDefaultAsync(c => c.Id == id);
 
             if (scheduleGroupSchedule == null)
@@ -85,8 +81,6 @@ namespace MockService.Controllers
         {
             var id = Guid.NewGuid();
             var scheduleGroup = await _context.ScheduleGroup
-                .Include(c => c.OrganizationalUnits).ThenInclude(c => c.OrganizationalUnit)
-                .Include(c => c.CompetenceScheduleGroups).ThenInclude(c => c.Competence)
                 .FirstOrDefaultAsync(c => c.Id == scheduleGroupSchedule.ScheduleGroupId);
 
             if (scheduleGroup == null)
@@ -97,14 +91,14 @@ namespace MockService.Controllers
             var newScheduleGroupSchedule = new ScheduleGroupSchedule
             {
                 Id = id,
-                ScheduleGroup = scheduleGroup,
                 ScheduleType = scheduleGroupSchedule.ScheduleType,
                 Start = scheduleGroupSchedule.StartDate,
                 End = scheduleGroupSchedule.EndDate,
             };
-            
-            _context.ScheduleGroupSchedule.Add(newScheduleGroupSchedule);
-            await _context.SaveChangesAsync();
+
+            _context.Entry(scheduleGroup).Entity.ScheduleGroupSchedules!.Add(newScheduleGroupSchedule);
+            _context.Entry(newScheduleGroupSchedule).State = EntityState.Added;
+            _context.SaveChanges();
 
             return CreatedAtAction("GetScheduleGroupSchedule", new { id = newScheduleGroupSchedule.Id }, newScheduleGroupSchedule);
         }

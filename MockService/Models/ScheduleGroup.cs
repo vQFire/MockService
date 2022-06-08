@@ -11,4 +11,6 @@ public class ScheduleGroup
     public string Code { get; set; }
     public bool IsValid { get; set; }
     public bool IgnoreInCalculations { get; set; }
+
+    public ICollection<ScheduleGroupSchedule> ScheduleGroupSchedules { get; set; }
 }
