@@ -64,6 +64,16 @@ namespace MockService.Controllers
                 .ToListAsync();
         }
 
+        [HttpPost("ids")]
+        public async Task<ActionResult<IEnumerable<ScheduleGroup>>> GetScheduleGroupsByIds([FromBody] IEnumerable<Guid> ids)
+        {
+            return await _context.ScheduleGroup
+                .Include(c => c.OrganizationalUnits).ThenInclude(c => c.OrganizationalUnit)
+                .Include(c => c.CompetenceScheduleGroups).ThenInclude(c => c.Competence)
+                .Include(c => c.ScheduleGroupSchedules)
+                .Where(c => ids.Contains(c.Id)).ToListAsync();
+        }
+
         [HttpPost("employee/{id}/ids")]
         public async Task<ActionResult<IEnumerable<Guid>>> GetScheduleGroupByEmployeeAndIds(Guid id, [FromBody] IEnumerable<Guid> ids)
         {
