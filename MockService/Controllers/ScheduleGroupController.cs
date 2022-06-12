@@ -31,6 +31,7 @@ namespace MockService.Controllers
             return await _context.ScheduleGroup
                 .Include(c => c.OrganizationalUnits).ThenInclude(c => c.OrganizationalUnit)
                 .Include(c => c.CompetenceScheduleGroups).ThenInclude(c => c.Competence)
+                .Include(c => c.ScheduleGroupSchedules)
                 .ToListAsync();
         }
 
@@ -41,6 +42,7 @@ namespace MockService.Controllers
             var scheduleGroup = await _context.ScheduleGroup
                 .Include(c => c.OrganizationalUnits).ThenInclude(c => c.OrganizationalUnit)
                 .Include(c => c.CompetenceScheduleGroups).ThenInclude(c => c.Competence)
+                .Include(c => c.ScheduleGroupSchedules)
                 .FirstOrDefaultAsync(c => c.Id == id);
 
             if (scheduleGroup == null)
@@ -57,16 +59,48 @@ namespace MockService.Controllers
             return await _context.ScheduleGroup
                 .Include(c => c.OrganizationalUnits).ThenInclude(c => c.OrganizationalUnit)
                 .Include(c => c.CompetenceScheduleGroups).ThenInclude(c => c.Competence)
+                .Include(c => c.ScheduleGroupSchedules)
                 .Where(c => c.OrganizationalUnits.Any(u => u.OrganizationalUnit.Id == id))
                 .ToListAsync();
         }
-        
+
+        [HttpPost("ids")]
+        public async Task<ActionResult<IEnumerable<ScheduleGroup>>> GetScheduleGroupsByIds([FromBody] IEnumerable<Guid> ids)
+        {
+            return await _context.ScheduleGroup
+                .Include(c => c.OrganizationalUnits).ThenInclude(c => c.OrganizationalUnit)
+                .Include(c => c.CompetenceScheduleGroups).ThenInclude(c => c.Competence)
+                .Include(c => c.ScheduleGroupSchedules)
+                .Where(c => ids.Contains(c.Id)).ToListAsync();
+        }
+
+        [HttpPost("employee/{id}/ids")]
+        public async Task<ActionResult<IEnumerable<Guid>>> GetScheduleGroupByEmployeeAndIds(Guid id, [FromBody] IEnumerable<Guid> ids)
+        {
+            IEnumerable<Competence> competences = await _context.EmployeeContractCompetences
+                .Include(c => c.Competence)
+                .Where(c =>
+                    c.EmployeeContract.Employee.Id == id &&
+                    c.validFrom.CompareTo(DateTime.Now.ToUniversalTime()) < 0 &&
+                    c.validTo.CompareTo(DateTime.Now.ToUniversalTime()) > 0
+                ).Select(c => c.Competence).ToListAsync();
+
+            return await _context.ScheduleGroup
+                .Where(c => 
+                    c.CompetenceScheduleGroups.Any(x => competences.Contains(x.Competence)) &&
+                    ids.Contains(c.Id)
+                )
+                .Select(c => c.Id)
+                .ToListAsync(); 
+        }
+
         [HttpGet("competence/{id}")]
         public async Task<ActionResult<IEnumerable<ScheduleGroup>>> GetScheduleGroupByCompetence(Guid id)
         {
             return await _context.ScheduleGroup
                 .Include(c => c.OrganizationalUnits).ThenInclude(c => c.OrganizationalUnit)
                 .Include(c => c.CompetenceScheduleGroups).ThenInclude(c => c.Competence)
+                .Include(c => c.ScheduleGroupSchedules)
                 .Where(c => c.CompetenceScheduleGroups.Any(u => u.Competence.Id == id))
                 .ToListAsync();
         }
