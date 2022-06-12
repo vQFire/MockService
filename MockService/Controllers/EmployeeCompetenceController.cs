@@ -1,9 +1,4 @@
 #nullable disable
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MockService.Data;
@@ -57,6 +52,30 @@ namespace MockService.Controllers
                 .Include(c => c.Competence)
                 .Where(c => c.EmployeeContract.Id == id)
                 .ToListAsync();
+        }
+        
+        // GET: api/EmployeeCompetence/5
+        [HttpGet("~/api/employee/{id}/competence")]
+        public async Task<ICollection<Competence>> GetCompetencesOfOneEmployee(Guid id)
+        {
+            ICollection<EmployeeContract> employeeContracts = await _context.EmployeeContracts
+                .Where(c => c.EmployeeId == id).ToListAsync();
+
+            ICollection<Competence> competences = new List<Competence>();
+
+            foreach (var contract in employeeContracts)
+            {
+                EmployeeContractCompetence employeeContractCompetence = await _context.EmployeeContractCompetences
+                    .Where(c => c.EmployeeContractId == contract.Id)
+                    .Include(c => c.Competence)
+                    .FirstOrDefaultAsync();
+                
+                if (employeeContractCompetence is null) continue;
+                
+                competences.Add(employeeContractCompetence.Competence);
+            }
+
+            return competences;
         }
 
         // PUT: api/EmployeeCompetence/5
