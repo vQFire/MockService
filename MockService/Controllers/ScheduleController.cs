@@ -140,7 +140,20 @@ namespace MockService.Controllers
                 .Where(c => c.EmployeeContract.Id == id && c.Start.ToUniversalTime().Date == DateTime.Now.Date)
                 .ToListAsync();
         }
-        
+
+        [HttpGet("contract/{id}/currentweek")]
+        public async Task<ActionResult<IEnumerable<IEnumerable<Schedule>>>> GetCurrentWeekSchedulesByContract(Guid id)
+        {
+            var today = DateTime.Today;
+            Console.WriteLine(today.ToLongDateString());
+            Console.WriteLine(today.ToLongTimeString());
+            var currentDay = today.DayOfWeek;
+            var daysOffsetToMonday = (int) currentDay - 1;
+            DateTime monday = today.AddDays(-daysOffsetToMonday);
+            Console.WriteLine(monday);
+            return null;
+        }
+
         [HttpGet("contract/{id}/date/{date}")]
         public async Task<ActionResult<IEnumerable<Schedule>>> GetScheduleByContractAndDay(Guid id, DateTime date)
         {
