@@ -146,25 +146,22 @@ namespace MockService.Controllers
         public async Task<ActionResult<List<Schedule>>>
             GetSchedulesOfWeekByContractAndDate(Guid id, DateTime date)
         {
-            Console.WriteLine(date);
-            Console.WriteLine(date.ToLongDateString());
-            var currentDayOfWeek = date.DayOfWeek;
-            var daysOffsetToMonday = currentDayOfWeek == DayOfWeek.Sunday ? 6 : (int)currentDayOfWeek - 1;
-            Console.WriteLine(daysOffsetToMonday);
-            var monday = date.AddDays(-daysOffsetToMonday);
-            var sunday = date.AddDays(6 - daysOffsetToMonday);
-            Console.WriteLine(monday);
-            Console.WriteLine(sunday);
             var contract = await _context.EmployeeContracts.FirstOrDefaultAsync(c => c.Id == id);
             if (contract == null)
             {
                 return NotFound();
             }
-            
-            return await _context.Schedule.Where(s => s.Start.ToUniversalTime() >= monday.ToUniversalTime() && s.Start.ToUniversalTime() <= sunday.ToUniversalTime() && s.EmployeeContract.Id == id)
+
+            var currentDayOfWeek = date.DayOfWeek;
+            var daysOffsetToMonday = currentDayOfWeek == DayOfWeek.Sunday ? 6 : (int) currentDayOfWeek - 1;
+            var monday = date.AddDays(-daysOffsetToMonday);
+            var sunday = date.AddDays(6 - daysOffsetToMonday);
+            return await _context.Schedule.Where(
+                    s => s.Start.ToUniversalTime() >= monday.ToUniversalTime() &&
+                         s.Start.ToUniversalTime() <= sunday.ToUniversalTime() && s.EmployeeContract.Id == id)
+                .Include(s => s.ScheduleGroup)
                 .OrderBy(s => s.Start)
                 .ToListAsync();
-
         }
 
         [HttpGet("contract/{id}/date/{date}")]
