@@ -1,5 +1,6 @@
 #nullable disable
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -141,17 +142,29 @@ namespace MockService.Controllers
                 .ToListAsync();
         }
 
-        [HttpGet("contract/{id}/currentweek")]
-        public async Task<ActionResult<IEnumerable<IEnumerable<Schedule>>>> GetCurrentWeekSchedulesByContract(Guid id)
+        [HttpGet("contract/{id}/week/{date}")]
+        public async Task<ActionResult<List<Schedule>>>
+            GetSchedulesOfWeekByContractAndDate(Guid id, DateTime date)
         {
-            var today = DateTime.Today;
-            Console.WriteLine(today.ToLongDateString());
-            Console.WriteLine(today.ToLongTimeString());
-            var currentDay = today.DayOfWeek;
-            var daysOffsetToMonday = (int) currentDay - 1;
-            DateTime monday = today.AddDays(-daysOffsetToMonday);
+            Console.WriteLine(date);
+            Console.WriteLine(date.ToLongDateString());
+            var currentDayOfWeek = date.DayOfWeek;
+            var daysOffsetToMonday = currentDayOfWeek == DayOfWeek.Sunday ? 6 : (int)currentDayOfWeek - 1;
+            Console.WriteLine(daysOffsetToMonday);
+            var monday = date.AddDays(-daysOffsetToMonday);
+            var sunday = date.AddDays(6 - daysOffsetToMonday);
             Console.WriteLine(monday);
-            return null;
+            Console.WriteLine(sunday);
+            var contract = await _context.EmployeeContracts.FirstOrDefaultAsync(c => c.Id == id);
+            if (contract == null)
+            {
+                return NotFound();
+            }
+            
+            return await _context.Schedule.Where(s => s.Start.ToUniversalTime() >= monday.ToUniversalTime() && s.Start.ToUniversalTime() <= sunday.ToUniversalTime() && s.EmployeeContract.Id == id)
+                .OrderBy(s => s.Start)
+                .ToListAsync();
+
         }
 
         [HttpGet("contract/{id}/date/{date}")]
