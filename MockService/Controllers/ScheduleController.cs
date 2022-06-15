@@ -65,6 +65,7 @@ namespace MockService.Controllers
                 Start = c.Start,
                 End = c.End,
                 Competences = c.ScheduleGroup.CompetenceScheduleGroups.Select(d => d.Competence.Id),
+                EmployeeId = c.EmployeeContract.Employee.Id,
                 EmployeeName = $"{c.EmployeeContract.Employee.FirstName} {c.EmployeeContract.Employee.Name}"
             });
 
