@@ -56,6 +56,7 @@ namespace MockService.Controllers
                 .Include(c => c.EmployeeContract.Employee)
                 .Include(c => c.ScheduleGroup.CompetenceScheduleGroups)
                 .ThenInclude(c => c.Competence)
+                .Where (c => c.Start >= DateTime.UtcNow)
                 .Where(c => scheduleIds.Contains(c.Id)).ToListAsync();
 
             var scheduleDtos = schedules.Select(c => new TradeOfferScheduleDTO
