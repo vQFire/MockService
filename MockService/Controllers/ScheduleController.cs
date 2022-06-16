@@ -60,6 +60,7 @@ namespace MockService.Controllers
                 .Include(c => c.EmployeeContract.Employee)
                 .Include(c => c.ScheduleGroup.CompetenceScheduleGroups)
                 .ThenInclude(c => c.Competence)
+                .Where (c => c.Start >= DateTime.UtcNow)
                 .Where(c => scheduleIds.Contains(c.Id)).ToListAsync();
 
             var scheduleDtos = schedules.Select(c => new TradeOfferScheduleDTO
@@ -69,6 +70,7 @@ namespace MockService.Controllers
                 Start = c.Start,
                 End = c.End,
                 Competences = c.ScheduleGroup.CompetenceScheduleGroups.Select(d => d.Competence.Id),
+                EmployeeId = c.EmployeeContract.Employee.Id,
                 EmployeeName = $"{c.EmployeeContract.Employee.FirstName} {c.EmployeeContract.Employee.Name}"
             });
 
