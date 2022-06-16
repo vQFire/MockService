@@ -166,7 +166,6 @@ namespace MockService.Controllers
             var listOfWeekSchedules = new List<List<Schedule>>();
             for (var i = 0; i < 7; i++)
             {
-                Console.WriteLine(currentDate.Date);
                 var schedules = await _context.Schedule
                     .Include(s => s.ScheduleGroup)
                     .OrderBy(s => s.Start)
