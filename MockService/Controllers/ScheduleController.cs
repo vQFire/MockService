@@ -60,7 +60,7 @@ namespace MockService.Controllers
                 .Include(c => c.EmployeeContract.Employee)
                 .Include(c => c.ScheduleGroup.CompetenceScheduleGroups)
                 .ThenInclude(c => c.Competence)
-                .Where (c => c.Start >= DateTime.UtcNow)
+                .Where(c => c.Start >= DateTime.UtcNow)
                 .Where(c => scheduleIds.Contains(c.Id)).ToListAsync();
 
             var scheduleDtos = schedules.Select(c => new TradeOfferScheduleDTO
@@ -164,22 +164,19 @@ namespace MockService.Controllers
             var daysOffsetToMonday = currentDayOfWeek == DayOfWeek.Sunday ? 6 : (int) currentDayOfWeek - 1;
             var currentDate = date.AddDays(-daysOffsetToMonday);
             var listOfWeekSchedules = new List<List<Schedule>>();
-            for (int i = 0; i < 6; i++)
+            for (var i = 0; i < 7; i++)
             {
-                var schedulesOfDay = await _context.Schedule.Where(s =>
-                        s.Start.ToUniversalTime() >= currentDate &&
-                        s.Start.ToUniversalTime() <= currentDate.AddDays(1) &&
-                        s.EmployeeContract.Id == id)
+                Console.WriteLine(currentDate.Date);
+                var schedules = await _context.Schedule
                     .Include(s => s.ScheduleGroup)
-                    .OrderBy(s => s.Start).ToListAsync();
-                listOfWeekSchedules.Add(schedulesOfDay);
+                    .OrderBy(s => s.Start)
+                    .Where(c => c.EmployeeContract.Id == id &&
+                                c.Start.ToUniversalTime().Date == currentDate.Date)
+                    .ToListAsync();
+                listOfWeekSchedules.Add(schedules);
                 currentDate = currentDate.AddDays(1);
             }
-            listOfWeekSchedules.Add(await _context.Schedule.Where(s =>
-                    s.Start.ToUniversalTime() >= currentDate && s.Start.ToUniversalTime() <= currentDate.AddDays(1) &&
-                    s.EmployeeContract.Id == id)
-                .Include(s => s.ScheduleGroup)
-                .OrderBy(s => s.Start).ToListAsync());
+
             return listOfWeekSchedules;
         }
 
