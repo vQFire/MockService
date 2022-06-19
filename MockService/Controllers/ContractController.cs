@@ -52,6 +52,15 @@ namespace MockService.Controllers
             return employeeContract;
         }
 
+        [HttpPost("ids")]
+        public async Task<ActionResult<IEnumerable<EmployeeContract>>> GetEmployeeContractsByIds([FromBody] IEnumerable<Guid> ids)
+        {
+            return await _context.EmployeeContracts
+                .Include(c => c.Employee)
+                .Where(c => ids.Contains(c.Id))
+                .ToListAsync();
+        } 
+
         // PUT: api/Contract/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]

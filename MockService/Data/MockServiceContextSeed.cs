@@ -253,7 +253,8 @@ public static class MockServiceContextSeed
         var organizationalUnitScheduleGroupLabOost = await context.OrganizationalUnitScheduleGroups.FindAsync(Guid.Parse("ac7e15ed-a1b7-456a-b323-9a842eff2ef8"));
         scheduleGroupMd1!.OrganizationalUnits = new List<OrganizationalUnitScheduleGroup>();
         scheduleGroupMd1.OrganizationalUnits.Add(organizationalUnitScheduleGroupLabOost!);
-        
+        // Add MD1 schedule group to VVLEINO
+        scheduleGroupMd1.OrganizationalUnits.Add(organizationalUnitScheduleGroupVvleino!);
         await context.SaveChangesAsync();
     }
 

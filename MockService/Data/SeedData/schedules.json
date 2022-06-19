@@ -1,12 +1,57 @@
 ﻿[
   {
+    "_": "OD1 voor UM1",
+    "Id": "9da4ae56-8419-4aec-b741-07aaa713eaf6",
+    "ScheduleType": 1,
+    "ScheduleGroupId": "ec1542e0-a2c9-43d0-ab31-357cc8fd6adb",
+    "EmployeeContractId": "2a62c932-3a59-4b3c-847e-696d39c93c17",
+    "Date": "2022-06-20T00:00:00+00:00",
+    "Start": "2022-06-20T06:00:00+00:00",
+    "End": "2022-06-20T10:00:00+00:00",
+    "HasChanged": false
+  },
+  {
+    "_": "OD1 voor UM1",
+    "Id": "075c04d8-99b8-45a7-b53c-cc18b07dadf1",
+    "ScheduleType": 1,
+    "ScheduleGroupId": "ec1542e0-a2c9-43d0-ab31-357cc8fd6adb",
+    "EmployeeContractId": "2a62c932-3a59-4b3c-847e-696d39c93c17",
+    "Date": "2022-06-21T00:00:00+00:00",
+    "Start": "2022-06-21T06:00:00+00:00",
+    "End": "2022-06-21T10:00:00+00:00",
+    "HasChanged": false
+  },
+  {
+    "_": "OD1 voor UM1",
+    "Id": "ee64f3b9-614c-4133-b267-fdb7e280bb27",
+    "ScheduleType": 1,
+    "ScheduleGroupId": "ec1542e0-a2c9-43d0-ab31-357cc8fd6adb",
+    "EmployeeContractId": "2a62c932-3a59-4b3c-847e-696d39c93c17",
+    "Date": "2022-06-23T00:00:00+00:00",
+    "Start": "2022-06-23T06:00:00+00:00",
+    "End": "2022-06-23T10:00:00+00:00",
+    "HasChanged": false
+  },
+  {
+    "_": "OD1 voor UM1",
+    "Id": "beca692b-e0e6-413d-8654-9169a2a95165",
+    "ScheduleType": 1,
+    "ScheduleGroupId": "ec1542e0-a2c9-43d0-ab31-357cc8fd6adb",
+    "EmployeeContractId": "2a62c932-3a59-4b3c-847e-696d39c93c17",
+    "Date": "2022-06-24T00:00:00+00:00",
+    "Start": "2022-06-24T06:00:00+00:00",
+    "End": "2022-06-24T10:00:00+00:00",
+    "HasChanged": false
+  },
+  {
+    "_": "OD1 voor UM1",
     "Id": "76b501f9-9f87-4cc1-9fd2-3592cad2740d",
     "ScheduleType": 1,
     "ScheduleGroupId": "ec1542e0-a2c9-43d0-ab31-357cc8fd6adb",
     "EmployeeContractId": "2a62c932-3a59-4b3c-847e-696d39c93c17",
     "Date": "2022-06-27T00:00:00+00:00",
-    "Start": "2022-06-27T09:00:00+00:00",
-    "End": "2022-06-27T12:00:00+00:00",
+    "Start": "2022-06-27T06:00:00+00:00",
+    "End": "2022-06-27T10:00:00+00:00",
     "HasChanged": false
   },
   {
@@ -15,28 +60,74 @@
     "ScheduleGroupId": "ec1542e0-a2c9-43d0-ab31-357cc8fd6adb",
     "EmployeeContractId": "2a62c932-3a59-4b3c-847e-696d39c93c17",
     "Date": "2022-06-29T00:00:00+00:00",
-    "Start": "2022-06-29T09:00:00+00:00",
-    "End": "2022-06-29T12:00:00+00:00",
+    "Start": "2022-06-29T06:00:00+00:00",
+    "End": "2022-06-29T10:00:00+00:00",
     "HasChanged": false
   },
   {
+    "_": "MD1 voor UM1",
     "Id": "5f91738a-40b8-42af-94ab-9699c664a8c3",
     "ScheduleType": 1,
     "ScheduleGroupId": "3e7f7adb-fc4e-43c8-9600-276434af27c6",
     "EmployeeContractId": "2a62c932-3a59-4b3c-847e-696d39c93c17",
     "Date": "2022-06-30T00:00:00+00:00",
-    "Start": "2022-06-30T12:00:00+00:00",
+    "Start": "2022-06-30T10:00:00+00:00",
     "End": "2022-06-30T16:00:00+00:00",
     "HasChanged": false
   },
   {
+    "_": "MD1 voor UM1",
+    "Id": "10f96dfc-f606-4e16-b368-773fdcd75d55",
+    "ScheduleType": 1,
+    "ScheduleGroupId": "3e7f7adb-fc4e-43c8-9600-276434af27c6",
+    "EmployeeContractId": "2a62c932-3a59-4b3c-847e-696d39c93c17",
+    "Date": "2022-06-29T00:00:00+00:00",
+    "Start": "2022-06-29T10:00:00+00:00",
+    "End": "2022-06-29T16:00:00+00:00",
+    "HasChanged": false
+  },
+  {
+    "_": "OD1 voor UM2",
+    "Id": "0673ddae-1e2f-4251-8fb9-fec007a905c4",
+    "ScheduleType": 1,
+    "ScheduleGroupId": "ec1542e0-a2c9-43d0-ab31-357cc8fd6adb",
+    "EmployeeContractId": "3838aff6-ab90-414f-a92b-b7293acd94f6",
+    "Date": "2022-06-26T00:00:00+00:00",
+    "Start": "2022-06-26T06:00:00+00:00",
+    "End": "2022-06-26T10:00:00+00:00",
+    "HasChanged": false
+  },
+  {
+    "_": "OD1 voor UM2",
     "Id": "a8167dda-b3a2-4285-8bfe-221646797648",
     "ScheduleType": 1,
     "ScheduleGroupId": "ec1542e0-a2c9-43d0-ab31-357cc8fd6adb",
     "EmployeeContractId": "3838aff6-ab90-414f-a92b-b7293acd94f6",
     "Date": "2022-06-28T00:00:00+00:00",
-    "Start": "2022-06-28T09:00:00+00:00",
-    "End": "2022-06-28T12:00:00+00:00",
+    "Start": "2022-06-28T06:00:00+00:00",
+    "End": "2022-06-28T10:00:00+00:00",
+    "HasChanged": false
+  },
+  {
+    "_": "OD1 voor UM2",
+    "Id": "abc003b7-e720-4f6b-bbde-5b66ef111ce1",
+    "ScheduleType": 1,
+    "ScheduleGroupId": "ec1542e0-a2c9-43d0-ab31-357cc8fd6adb",
+    "EmployeeContractId": "3838aff6-ab90-414f-a92b-b7293acd94f6",
+    "Date": "2022-07-02T00:00:00+00:00",
+    "Start": "2022-07-02T06:00:00+00:00",
+    "End": "2022-07-02T10:00:00+00:00",
+    "HasChanged": false
+  },
+  {
+    "_": "OD1 voor UM2",
+    "Id": "a1f5b641-d93c-40e1-95af-c3f67e135582",
+    "ScheduleType": 1,
+    "ScheduleGroupId": "ec1542e0-a2c9-43d0-ab31-357cc8fd6adb",
+    "EmployeeContractId": "3838aff6-ab90-414f-a92b-b7293acd94f6",
+    "Date": "2022-07-03T00:00:00+00:00",
+    "Start": "2022-07-03T06:00:00+00:00",
+    "End": "2022-07-03T10:00:00+00:00",
     "HasChanged": false
   }
 ]
