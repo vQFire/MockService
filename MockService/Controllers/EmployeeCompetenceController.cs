@@ -56,26 +56,32 @@ namespace MockService.Controllers
         
         // GET: api/EmployeeCompetence/5
         [HttpGet("~/api/employee/{id}/competence")]
-        public async Task<ICollection<Competence>> GetCompetencesOfOneEmployee(Guid id)
+        public async Task<List<EmployeeCompetenceDTO>> GetCompetencesOfOneEmployee(Guid id)
         {
-            ICollection<EmployeeContract> employeeContracts = await _context.EmployeeContracts
+            List<EmployeeContract> employeeContracts = await _context.EmployeeContracts
                 .Where(c => c.EmployeeId == id).ToListAsync();
 
-            ICollection<Competence> competences = new List<Competence>();
+            List<EmployeeCompetenceDTO> employeeContractsCompetences = new List<EmployeeCompetenceDTO>();
 
             foreach (var contract in employeeContracts)
             {
-                EmployeeContractCompetence employeeContractCompetence = await _context.EmployeeContractCompetences
+                EmployeeCompetenceDTO employeeCompetenceDto = new EmployeeCompetenceDTO();
+                employeeCompetenceDto.ContractId = contract.Id;
+                
+                List<EmployeeContractCompetence> employeeContractCompetences = await _context.EmployeeContractCompetences
                     .Where(c => c.EmployeeContractId == contract.Id)
                     .Include(c => c.Competence)
-                    .FirstOrDefaultAsync();
+                    .ToListAsync();
                 
-                if (employeeContractCompetence is null) continue;
+                foreach (var employeeContractCompetence in employeeContractCompetences)
+                {
+                    employeeCompetenceDto.Competences.Add(employeeContractCompetence.Competence);
+                }
                 
-                competences.Add(employeeContractCompetence.Competence);
+                employeeContractsCompetences.Add(employeeCompetenceDto);
             }
 
-            return competences;
+            return employeeContractsCompetences;
         }
 
         // PUT: api/EmployeeCompetence/5
